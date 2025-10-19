@@ -1,19 +1,23 @@
 import { Request, Response } from "express";
 import Blog, { IBlog, IComment } from "../models/Blog";
 import User from "../models/User";
+import MainComment from "../models/MainComment";
+import ReplyComment from "../models/ReplyComment";
 import ApiResponse from "../utils/Response";
+import { PipelineStage } from "mongoose";
+import Notification from "../models/Notification";
+
 
 // 创建博客
 export const createBlog = async (req: Request, res: Response): Promise<void> => {
     try {
         // 从JWT中获取用户ID
         const loggedInUserId = req.user.id;
-
-        const { content, type, title, images } = req.body;
+        const { content, type, title, description, images } = req.body;
 
         // 验证必需字段 
-        if (!title || !content || !type) {
-            res.status(400).json(ApiResponse.badRequest("Title, content, and type are required"));
+        if (!title || !description || !content || !type) {
+            res.status(400).json(ApiResponse.badRequest("Title, description, content, and type are required"));
             return;
         }
 
@@ -27,6 +31,7 @@ export const createBlog = async (req: Request, res: Response): Promise<void> => 
         // 创建博客 - 使用JWT中的用户ID
         const newBlog = new Blog({
             title,
+            description,
             content,
             userId: loggedInUserId,
             userName: user.userName,
@@ -36,6 +41,20 @@ export const createBlog = async (req: Request, res: Response): Promise<void> => 
         });
 
         await newBlog.save();
+
+        // 创建新博客通知：通知作者的所有粉丝
+        const followers = user.followers || [];
+        if (followers.length > 0) {
+            const notifications = followers.map(followerId => ({
+                type: "new_blog",
+                senderId: user._id,
+                receiverId: followerId,
+                blogId: newBlog._id,
+                isRead: false,
+                message: `${user.userName} published a new blog: ${title}`
+            }));
+            await Notification.insertMany(notifications);
+        }
 
         res.status(201).json(ApiResponse.success("Blog created successfully", 201, newBlog));
     } catch (error) {
@@ -47,17 +66,28 @@ export const createBlog = async (req: Request, res: Response): Promise<void> => 
 // 获取博客列表（支持搜索和筛选）
 export const getBlogs = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { search, type, sortBy } = req.query;
+        const { search,userId, type, sortBy } = req.query;
 
         // 构建查询条件
         const query: any = {};
 
-        // 搜索条件
+        // 搜索条件 - 支持标题、内容和简介的模糊搜索
         if (search) {
             query.$or = [
                 { title: { $regex: search, $options: 'i' } },
-                { content: { $regex: search, $options: 'i' } }
+                { content: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+                { type: { $regex: search, $options: 'i' } },
+                { userName: { $regex: search, $options: 'i' } },
+               
+
             ];
+        }
+
+        if (userId) { 
+            query.$and = [
+                {userId: userId as string}
+            ]
         }
 
         // 类型筛选
@@ -65,36 +95,107 @@ export const getBlogs = async (req: Request, res: Response): Promise<void> => {
             query.type = type;
         }
 
-        // 排序条件
-        let sort: any = { createdAt: -1 }; // 默认按创建时间倒序
-        if (sortBy === 'oldest') {
-            sort = { createdAt: 1 };
-        } else if (sortBy === 'latest') {
-            sort = { createdAt: -1 };
-        }
-        // else if (sortBy === 'popular') {
-        //     // 按点赞数排序的逻辑需要在应用层处理，因为MongoDB不支持直接按数组长度排序
-        //     // 这里我们仍然按创建时间排序
-        //     sort = { likes: -1 };
-        // }
-
         // 分页
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
         const skip = (page - 1) * limit;
 
-        // 查询博客
-        const blogs = await Blog.find(query)
-            .sort(sort)
-            .skip(skip)
-            .limit(limit)
-            .populate('userId', 'userName userImg');
+        let blogs;
+        let total;
 
-        // 获取总数
-        const total = await Blog.countDocuments(query);
+        // 排序条件
+        if (sortBy === 'popular') {
+            // 按点赞数排序 - 使用聚合管道
+            const pipeline: PipelineStage[] = [
+                { $match: query },
+                {
+                    $addFields: {
+                        likesCount: { $size: "$likes" }
+                    }
+                },
+                { $sort: { likesCount: -1, createdAt: -1 } },
+                { $skip: skip },
+                { $limit: limit },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'userId',
+                        foreignField: '_id',
+                        as: 'userInfo'
+                    }
+                },
+                {
+                    $addFields: {
+                        userId: {
+                            $arrayElemAt: ['$userInfo', 0]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        userInfo: 0,
+                        'userId.password': 0,
+                        'userId.userEmail': 0,
+                        'userId.account': 0,
+                        'userId.userCode': 0,
+                        'userId.useGoogle': 0,
+                        'userId.isDeleted': 0,
+                        'userId.createdAt': 0,
+                        'userId.updatedAt': 0,
+                        'userId.__v': 0
+                    }
+                }
+            ];
+
+            blogs = await Blog.aggregate(pipeline);
+            total = await Blog.countDocuments(query);
+        } else {
+            // 其他排序方式
+            let sort: any = { createdAt: -1 }; // 默认按创建时间倒序
+            if (sortBy === 'oldest') {
+                sort = { createdAt: 1 };
+            } else if (sortBy === 'latest') {
+                sort = { createdAt: -1 };
+            }
+
+            // 查询博客
+            blogs = await Blog.find(query)
+                .sort(sort)
+                .skip(skip)
+                .limit(limit)
+                .populate('userId', 'userName userImg');
+
+            // 获取总数
+            total = await Blog.countDocuments(query);
+        }
+
+        // 为每个博客添加评论总数
+        const blogsWithCommentCount = await Promise.all(
+            blogs.map(async (blog) => {
+                const blogId = blog._id;
+                
+                // 查询主评论
+                const mainComments = await MainComment.find({ blogId }).select('_id');
+                const mainCommentIds = mainComments.map(comment => comment._id);
+                
+                // 查询回复评论
+                const replyCount = mainCommentIds.length > 0 
+                    ? await ReplyComment.countDocuments({ parentId: { $in: mainCommentIds } })
+                    : 0;
+                
+                // 总评论数 = 主评论数 + 回复评论数
+                const commentsCount = mainComments.length + replyCount;
+                
+                // 返回包含评论数的博客对象
+                return {
+                    ...blog.toObject ? blog.toObject() : blog,
+                    commentsCount
+                };
+            })
+        );
 
         res.status(200).json(ApiResponse.success("Blogs retrieved successfully", 200, {
-            blogs,
+            blogs: blogsWithCommentCount,
             pagination: {
                 page,
                 limit,
@@ -138,6 +239,42 @@ export const getBlogById = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
+// 增加博客浏览量
+export const incrementBlogViews = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const viewerId = req.body.viewerId; // 可选，用于判断是否是博主自己
+
+        const blog = await Blog.findById(id);
+        if (!blog) {
+            res.status(404).json(ApiResponse.notFound("Blog not found"));
+            return;
+        }
+
+        // 如果提供了 viewerId，检查是否是博主本人
+        if (viewerId && blog.userId.toString() === viewerId) {
+            // 博主本人，不增加浏览量
+            res.status(200).json(ApiResponse.success("View recorded (author)", 200, { 
+                views: blog.views,
+                incremented: false 
+            }));
+            return;
+        }
+
+        // 增加浏览量
+        blog.views = (blog.views || 0) + 1;
+        await blog.save();
+
+        res.status(200).json(ApiResponse.success("View count incremented", 200, { 
+            views: blog.views,
+            incremented: true 
+        }));
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(ApiResponse.internalError("Failed to increment views"));
+    }
+};
+
 // 更新博客
 export const updateBlog = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -167,12 +304,26 @@ export const updateBlog = async (req: Request, res: Response): Promise<void> => 
 export const deleteBlog = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
+        const userId = req.user?.id;
 
-        const blog = await Blog.findByIdAndDelete(id);
+        if (!userId) {
+            res.status(401).json(ApiResponse.unauthorized("token unauthorized"));
+            return;
+        }
+
+        const blog = await Blog.findById(id);
         if (!blog) {
             res.status(404).json(ApiResponse.notFound("Blog not found"));
             return;
         }
+
+        // 权限校验：仅作者可删除
+        if (blog.userId.toString() !== userId) {
+            res.status(403).json(ApiResponse.forbidden("You can only delete your own blogs"));
+            return;
+        }
+
+        await Blog.findByIdAndDelete(id);
 
         res.status(200).json(ApiResponse.success("Blog deleted successfully", 200, null));
     } catch (error) {
@@ -223,45 +374,65 @@ export const likeBlog = async (req: Request, res: Response): Promise<void> => {
 };
 
 // 添加评论
-export const addComment = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        const { userId, content } = req.body;
-        if (!userId || !content) {
-            res.status(400).json(ApiResponse.badRequest("User ID and content are required"));
-            return;
-        }
+// export const addComment = async (req: Request, res: Response): Promise<void> => {
+//     try {
+//         const { id } = req.params;
+//         const { userId, content, parentId } = req.body;
+//         if (!userId || !content) {
+//             res.status(400).json(ApiResponse.badRequest("User ID and content are required"));
+//             return;
+//         }
 
-        // 查找用户信息
-        const user = await User.findById(userId);
-        console.log("finding user..", user);
-        if (!user) {
-            res.status(404).json(ApiResponse.notFound("User not found"));
-            return;
-        }
+//         // 查找用户信息
+//         const user = await User.findById(userId);
+//         console.log("finding user..", user);
+//         if (!user) {
+//             res.status(404).json(ApiResponse.notFound("User not found"));
+//             return;
+//         }
 
-        // 查找博客
-        const blog = await Blog.findById(id);
-        if (!blog) {
-            res.status(404).json(ApiResponse.notFound("Blog not found"));
-            return;
-        }
+//         // 查找博客
+//         const blog = await Blog.findById(id);
+//         if (!blog) {
+//             res.status(404).json(ApiResponse.notFound("Blog not found"));
+//             return;
+//         }
 
-        // 添加评论
-        const comment = {
-            userId: userId,
-            userName: user.userName,
-            userImg: user.userImg,
-            content,
-            createdAt: new Date()
-        };
+//         // 创建评论对象
+//         const comment = {
+//             userId: userId,
+//             userName: user.userName,
+//             userImg: user.userImg,
+//             content,
+//             parentId: parentId || null,
+//             replies: [],
+//             createdAt: new Date()
+//         };
 
-        blog.comments.push(comment);
-        await blog.save();
+//         if (parentId) {
+//             // 如果是回复评论，找到父评论并添加到其replies数组中
+//             const parentComment = blog.comments.id(parentId);
+//             if (!parentComment) {
+//                 res.status(404).json(ApiResponse.notFound("Parent comment not found"));
+//                 return;
+//             }
+            
+//             // 确保replies数组存在
+//             if (!parentComment.replies) {
+//                 parentComment.replies = [];
+//             }
+            
+//             parentComment.replies.push(comment);
+//         } else {
+//             // 如果是顶级评论，直接添加到博客的comments数组中
+//             blog.comments.push(comment);
+//         }
+
+//         await blog.save();
         
-        res.status(201).json(ApiResponse.success("Comment added successfully", 201, comment));
-    } catch (error) {
-        console.error(error);
-        res.status(500).json(ApiResponse.internalError("Failed to add comment"));
-    }
-};
+//         res.status(201).json(ApiResponse.success("Comment added successfully", 201, comment));
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json(ApiResponse.internalError("Failed to add comment"));
+//     }
+// };
