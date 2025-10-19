@@ -43,7 +43,7 @@ const httpServer = createServer(app);
 // 集成 Socket.IO 并配置 CORS（允许前端域名）
 const io = new Server(httpServer, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: process.env.CLIENT_URL || "https://tutongbrothers.vercel.app",
         methods: ["GET", "POST"],
         credentials: true,
     },

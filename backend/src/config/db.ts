@@ -6,7 +6,8 @@ const connectDB = async (): Promise<void> => {
             dbName: "tutongbrothers"
         });
 
-        mongoose.set("debug", true);
+        // mongoose.set("debug", false);
+        mongoose.set("debug", process.env.NODE_ENV !== "production");
         console.log("MongoDB connection successful. Name:", mongoose.connection.name);
 
         console.log(`MongoDB Connected: ${conn.connection.host}`);
