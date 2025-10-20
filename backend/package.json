@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev:serverless": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "vercel-build": "echo 'Building for Vercel...'"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

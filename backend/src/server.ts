@@ -1,5 +1,8 @@
-import express, { Application } from "express";
+// 必须在所有导入之前加载环境变量
 import dotenv from "dotenv";
+dotenv.config();
+
+import express, { Application } from "express";
 import cors from "cors";
 import connectDB from "./config/db";
 // import todoRoutes from "./routes/todoRoutes";
@@ -11,8 +14,6 @@ import notificationRoutes from "./routes/notificationRoutes";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import userRoutes from "./routes/userRoutes";
-
-dotenv.config();
 
 // 连接数据库
 connectDB();
