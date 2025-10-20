@@ -1,10 +1,22 @@
 // 必须在所有导入之前加载环境变量
 import dotenv from "dotenv";
-dotenv.config();
+
+// 根据 NODE_ENV 加载对应的环境配置文件
+const envFile = process.env.NODE_ENV === 'production'
+    ? '.env.production'
+    : '.env.development';
+
+dotenv.config({ path: envFile });
+
+// 如果环境变量文件不存在，尝试加载默认 .env
+if (!process.env.MONGO_URI) {
+    dotenv.config();
+}
 
 import express, { Application } from "express";
 import cors from "cors";
 import connectDB from "./config/db";
+import { config, validateConfig, printConfig } from "./config/env";
 // import todoRoutes from "./routes/todoRoutes";
 import loginRoutes from "./routes/loginRoutes";
 import blogRoutes from "./routes/blogRoutes";
@@ -15,13 +27,25 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import userRoutes from "./routes/userRoutes";
 
+// 验证配置
+try {
+    validateConfig();
+    printConfig();
+} catch (error) {
+    console.error(error);
+    process.exit(1);
+}
+
 // 连接数据库
 connectDB();
 
 const app: Application = express();
 
 // 中间件
-app.use(cors());
+app.use(cors({
+    origin: config.clientUrl,
+    credentials: true,
+}));
 app.use(express.json());
 
 // 路由
@@ -38,13 +62,12 @@ app.get("/", (req, res) => {
 
 
 // 启动服务
-const PORT = process.env.PORT || 5000;
 const httpServer = createServer(app);
 
 // 集成 Socket.IO 并配置 CORS（允许前端域名）
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.CLIENT_URL || "https://tutongbrothers.vercel.app",
+        origin: config.clientUrl,
         methods: ["GET", "POST"],
         credentials: true,
     },
@@ -68,6 +91,8 @@ io.on("connection", (socket) => {
 // 将 io 挂载到 app，供控制器中使用
 (app as any).set("io", io);
 
-httpServer.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+httpServer.listen(config.port, () => {
+    console.log(`\n🚀 Server running on http://localhost:${config.port}`);
+    console.log(`📍 Environment: ${config.nodeEnv}`);
+    console.log(`🌐 Client URL: ${config.clientUrl}\n`);
 });
