@@ -55,7 +55,7 @@ export function ErrorDialogProvider({ children }: ErrorDialogProviderProps) {
     }
 
     const hideError = () => {
-        
+
         setIsOpen(false)
         // Delay clearing error info to wait for animation completion
         setTimeout(() => setError(null), 200)
@@ -82,14 +82,14 @@ export function ErrorDialogProvider({ children }: ErrorDialogProviderProps) {
                             {error?.title || "Error"}
                         </AlertDialogTitle>
                         <AlertDialogDescription className="text-center sm:text-left">
-                            <div className="space-y-2">
-                                <div className="text-sm text-muted-foreground">
+                            <span className="block space-y-2">
+                                <span className="block text-sm text-muted-foreground">
                                     Error Code: <span className="font-mono text-destructive">{error?.code}</span>
-                                </div>
-                                <div className="text-sm break-words">
+                                </span>
+                                <span className="block text-sm break-words">
                                     {error?.msg}
-                                </div>
-                            </div>
+                                </span>
+                            </span>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:gap-0">

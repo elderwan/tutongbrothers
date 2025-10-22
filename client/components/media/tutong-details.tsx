@@ -53,7 +53,7 @@ const Tutongdetails = ({ onClose }: TutongdetailsProps) => {
                             <div className="lg:w-1/3 relative group">
                                 <div className="relative overflow-hidden rounded-xl shadow-lg">
                                     <img
-                                        src="/tutongintro/huyitong.jpg"
+                                        src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116439/huyitong_cemqp7.jpg"
                                         alt="huyitong"
                                         className="w-full h-72 lg:h-80 object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
@@ -93,7 +93,7 @@ const Tutongdetails = ({ onClose }: TutongdetailsProps) => {
                             <div className="lg:w-1/3 relative group">
                                 <div className="relative overflow-hidden rounded-xl shadow-lg">
                                     <img
-                                        src="/tutongintro/hututu.jpg"
+                                        src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116438/hututu_vmek7h.jpg"
                                         alt="hututu"
                                         className="w-full h-72 lg:h-80 object-cover transition-transform duration-500 group-hover:scale-105"
                                     />

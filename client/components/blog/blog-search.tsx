@@ -103,7 +103,7 @@ export default function BlogSearch({ onSearch, initialParams }: BlogSearchProps)
               <Filter className="h-4 w-4" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-80" align="end">
+          <PopoverContent className="glass rounded-beagle-lg shadow-beagle-lg border border-white/20 w-80 p-4" align="end">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h4 className="font-medium">filter options</h4>
@@ -127,7 +127,7 @@ export default function BlogSearch({ onSearch, initialParams }: BlogSearchProps)
                   <SelectTrigger>
                     <SelectValue placeholder="select type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-cream">
                     <SelectItem value="all">all types</SelectItem>
                     {blogTypes.map((type) => (
                       <SelectItem key={type} value={type}>

@@ -47,6 +47,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
                     userCode: user.userCode,
                     userName: user.userName,
                     userImg: user.userImg,
+                    role: user.role,
                 }
             })
         );

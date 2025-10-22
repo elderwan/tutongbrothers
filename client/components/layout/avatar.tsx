@@ -17,30 +17,30 @@ export default function HoverCardDemo() {
         <div className="flex justify-end">
           <button
             onClick={() => setOpen(false)}
-            className="p-1 rounded-full hover:bg-gray-200"
+            className="p-2 rounded-full hover:bg-light-beige transition-colors"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4 text-forest-green" />
           </button>
         </div>
       )}
       <div className={`flex items-center justify-center ${showCloseButton ? "gap-4 md:gap-8" : "gap-8"}`}>
         <img
-          className="shrink-0 rounded-full border-gray-300 border-3 border-solid"
-          src="/avatar/detailAvatar.png"
+          className="shrink-0 rounded-full border-forest-green/20 border-3 border-solid shadow-beagle-md"
+          src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116329/detailAvatar_ehbdsf.png"
           width={showCloseButton ? 80 : 120}
           height={showCloseButton ? 80 : 120}
           alt="Avatar"
         />
         <div className={showCloseButton ? "space-y-2 md:space-y-3" : "space-y-3"}>
-          <p className={`font-medium font-mono ${showCloseButton ? "text-lg md:text-2xl" : "text-2xl"}`}>Edward Won</p>
-          <p className={`text-muted-foreground font-mono ${showCloseButton ? "text-sm md:text-lg" : "text-lg"}`}>@elderwan97</p>
-          <p className={`text-muted-foreground font-mono ${showCloseButton ? "text-sm md:text-lg" : "text-lg"}`}>@beaglewang</p>
+          <p className={`font-bold font-mono text-forest-green ${showCloseButton ? "text-lg md:text-2xl" : "text-2xl"}`}>Edward Won</p>
+          <p className={`text-medium-text font-mono font-semibold ${showCloseButton ? "text-sm md:text-lg" : "text-lg"}`}>@elderwan97</p>
+          <p className={`text-medium-text font-mono font-semibold ${showCloseButton ? "text-sm md:text-lg" : "text-lg"}`}>@beaglewang</p>
         </div>
       </div>
-      <p className={`text-muted-foreground font-mono leading-relaxed text-start flex flex-col ${showCloseButton ? "pl-3 md:pl-5 text-base md:text-xl space-y-1 md:space-y-0" : "pl-5 text-xl"}`}>
-        <strong className="text-foreground font-medium">📷 Beagle s*xy photographer</strong>
-        <strong className="text-foreground font-medium">💻 Beagle programmer</strong>
-        <strong className="text-foreground font-medium">🪩 Beagle Dancer</strong>
+      <p className={`text-medium-text font-mono leading-relaxed text-start flex flex-col ${showCloseButton ? "pl-3 md:pl-5 text-base md:text-xl space-y-1 md:space-y-0" : "pl-5 text-xl"}`}>
+        <strong className="text-forest-green font-bold">📷 Beagle s*xy photographer</strong>
+        <strong className="text-forest-green font-bold">💻 Beagle programmer</strong>
+        <strong className="text-forest-green font-bold">🪩 Beagle Dancer</strong>
       </p>
     </div>
   )
@@ -54,7 +54,7 @@ export default function HoverCardDemo() {
             <HoverCardTrigger asChild>
               <img
                 className="shrink-0 rounded-full border-gray-300 border-3 border-solid shadow-md cursor-pointer"
-                src="/avatar/avatar.png"
+                src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116330/avatar_q3e9wa.png"
                 width={160}
                 height={160}
                 alt="Avatar"
@@ -70,7 +70,7 @@ export default function HoverCardDemo() {
               <p className="text-muted-foreground text-xl font-mono"><a className="hover:underline" target="_blank" href="https://weibo.com/u/2193725294">@beaglewang</a></p>
             </div>
           </div>
-          <HoverCardContent className="w-[400px] font-mono">
+          <HoverCardContent className="glass rounded-beagle-lg shadow-beagle-lg border border-white/20 w-[400px] p-6 font-mono">
             <AvatarContent />
           </HoverCardContent>
         </HoverCard>
@@ -99,7 +99,7 @@ export default function HoverCardDemo() {
               <p className="text-muted-foreground text-xl font-mono"><a className="hover:underline" target="_blank" href="https://weibo.com/u/2193725294">@beaglewang</a></p>
             </div>
           </div>
-          <PopoverContent className="w-[300px] md:w-[400px] font-mono">
+          <PopoverContent className="glass rounded-beagle-lg shadow-beagle-lg border border-white/20 w-[300px] md:w-[400px] p-4 font-mono">
             <AvatarContent showCloseButton={true} />
           </PopoverContent>
         </Popover>

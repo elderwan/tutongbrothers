@@ -10,6 +10,15 @@ const nextConfig: NextConfig = {
     // 警告：这将在生产构建期间忽略 TypeScript 错误
     ignoreBuildErrors: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 
 // src/config.ts

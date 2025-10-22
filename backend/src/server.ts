@@ -23,6 +23,7 @@ import blogRoutes from "./routes/blogRoutes";
 import techStackRoutes from "./routes/techStackRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
+import photoRoutes from "./routes/photoRoutes";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import userRoutes from "./routes/userRoutes";
@@ -55,6 +56,7 @@ app.use("/api/blogs", blogRoutes);
 app.use("/api/tech-stack", techStackRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/photos", photoRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");

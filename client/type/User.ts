@@ -7,6 +7,7 @@ export default interface User {
   userBanner?: string;
   userCode?: number;
   userDesc?: string;
+  role?: 'user' | 'admin';
   followingCount?: number;
   followersCount?: number;
 }

@@ -66,7 +66,7 @@ export default function UserProfileMenu() {
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="max-w-64" align="end">
+        <DropdownMenuContent className="max-w-64 bg-cream" align="end">
           <div className="p-4 text-center">
             <div className="text-lg font-semibold mb-1">You are not sign in yet.</div>
             <div className="text-sm text-muted-foreground mb-4">Sign in to see more</div>
@@ -93,7 +93,7 @@ export default function UserProfileMenu() {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="max-w-64" align="end">
+      <DropdownMenuContent className="max-w-64 bg-cream" align="end">
         <DropdownMenuLabel className="flex min-w-0 flex-col">
           <span className="text-foreground truncate text-sm font-medium">
             {userData?.userName || "Unknown User"}

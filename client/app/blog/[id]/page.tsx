@@ -81,6 +81,31 @@ export default function BlogDetailPage({ params }: { params: { id: string } }) {
         }
     }, [blogId]);
 
+    // 平滑滚动到锚点评论
+    useEffect(() => {
+        if (!loading && blog) {
+            // 检查 URL 中是否有锚点
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#comment-')) {
+                // 延迟一点确保评论已渲染
+                setTimeout(() => {
+                    const element = document.querySelector(hash);
+                    if (element) {
+                        element.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                        // 添加高亮效果
+                        element.classList.add('highlight-comment');
+                        setTimeout(() => {
+                            element.classList.remove('highlight-comment');
+                        }, 2000);
+                    }
+                }, 300);
+            }
+        }
+    }, [loading, blog]);
+
     // 浏览量计数：停留5秒后触发
     useEffect(() => {
         if (!blog || viewCountedRef.current) return;

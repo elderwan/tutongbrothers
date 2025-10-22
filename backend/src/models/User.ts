@@ -13,6 +13,7 @@ export interface IUser extends Document {
     userGoogleId: string;
     isDeleted: boolean;
     userDesc: string; // 用户个人描述
+    role: string; // 用户角色：'user' | 'admin'
     // 新增：关注关系
     following: mongoose.Types.ObjectId[];
     followers: mongoose.Types.ObjectId[];
@@ -31,6 +32,7 @@ const userSchema: Schema = new Schema(
         userGoogleId: { type: String, required: false },
         isDeleted: { type: Boolean, required: false, default: false },
         userDesc: { type: String, required: false, default: '' },
+        role: { type: String, required: false, default: 'user', enum: ['user', 'admin'] },
         // 新增：关注关系
         following: [{ type: Schema.Types.ObjectId, ref: 'users', default: [] }],
         followers: [{ type: Schema.Types.ObjectId, ref: 'users', default: [] }],

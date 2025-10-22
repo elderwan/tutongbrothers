@@ -82,7 +82,13 @@ export default function NotificationMenu() {
           if (item.type === 'new_blog' && item.blogId) {
             router.push(`/blog/${item.blogId}`);
           } else if (item.type === 'reply' && item.blogId) {
-            router.push(`/blog/${item.blogId}`);
+            // 评论回复通知：跳转到博文并定位到具体评论
+            const commentId = item.replyCommentId || item.mainCommentId;
+            if (commentId) {
+              router.push(`/blog/${item.blogId}#comment-${commentId}`);
+            } else {
+              router.push(`/blog/${item.blogId}`);
+            }
           } else if (item.type === 'follow' && item.senderId) {
             router.push(`/blog`); // 暂无用户主页，先跳转到博客列表
           }
@@ -119,20 +125,20 @@ export default function NotificationMenu() {
         <Button
           size="icon"
           variant="ghost"
-          className="text-muted-foreground relative size-8 rounded-full shadow-none"
+          className="text-muted-foreground relative size-8 shadow-none"
           aria-label="Open notifications"
         >
           <BellIcon size={16} aria-hidden="true" />
           {unreadCount > 0 && (
             <div
               aria-hidden="true"
-              className="bg-primary absolute top-0.5 right-0.5 size-1 rounded-full"
+              className="bg-primary absolute top-0.5 right-0.5 size-1"
             />
           )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-90 p-1 max-h-[66vh] overflow-hidden">
-        <ScrollArea className="max-h-[50vh] sm:max-h-[66vh] rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 scrollbar-track-transparent">
+        <ScrollArea className="max-h-[50vh] sm:max-h-[66vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 scrollbar-track-transparent bg-cream">
           <div className="flex items-baseline justify-between gap-4 px-3 py-2">
             <div className="text-sm font-semibold">Notifications</div>
             {unreadCount > 0 && (
@@ -152,7 +158,7 @@ export default function NotificationMenu() {
           {notifications.map((notification) => (
             <div
               key={notification._id}
-              className="hover:bg-accent rounded-md px-3 py-2 text-sm transition-colors"
+              className="hover:bg-accent px-3 py-2 text-sm transition-colors"
             >
               <div className="relative flex items-start pe-3">
                 <div className="flex-1 space-y-1">
@@ -171,7 +177,7 @@ export default function NotificationMenu() {
                   {/* 回复通知中的被回复评论内容（最多两行，超出省略） */}
                   {notification.type === 'reply' && (
                     <div className="text-muted-foreground/90 text-xs">
-                      <div className="bg-muted/40 text-muted-foreground rounded-md px-2 py-1 w-full">
+                      <div className="bg-muted/40 text-muted-foreground px-2 py-1 w-full">
                         <span className="line-clamp-2 break-words">
                           {notification.commentContent ?? '...'}
                         </span>

@@ -47,7 +47,7 @@ export default function Component() {
   }, []);
 
   return (
-    <header className="border-b px-2 md:px-20 lg:px-60">
+    <header className="border-b px-2 md:px-20 lg:px-60 bg-[#F7F2E8]/90 sticky top-0 z-50">
       <div className="flex h-16 items-center justify-between gap-4">
         {/* Left side */}
 
@@ -87,7 +87,7 @@ export default function Component() {
                 </svg>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-48 p-1 md:hidden">
+            <PopoverContent align="start" className="glass rounded-beagle-md shadow-beagle-lg border border-white/20 w-48 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                   {navigationLinks.map((link, index) => {

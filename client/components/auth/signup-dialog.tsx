@@ -131,7 +131,7 @@ export default function SignupDialog({ open, onOpenChange }: SignupDialogProps) 
                 aria-hidden="true"
               >
                 <img
-                  src="/avatar/mx96.jpg"
+                  src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116328/mx96_vdrocj.jpg"
                   className="w-11 h-11 rounded-full object-cover"
                   alt="mx96"
                 />

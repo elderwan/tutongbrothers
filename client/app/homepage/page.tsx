@@ -3,16 +3,22 @@ import Link from "next/link";
 import PhotoCarousel from "@/components/media/photo-carousel";
 import Avatar from '@/components/layout/avatar'
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import TechStack from "@/components/ui/tech-stack";
 import { useState, useRef } from "react";
 import Tutongdetails from "@/components/media/tutong-details";
-import { useSuccessDialog } from "@/components/dialogs/success-dialog";
-import { Heart, Sparkles, Code2, Dog } from "lucide-react";
+import PhotoManager from "@/components/admin/photo-manager";
+
+import SimpleCodingAnimation from "@/components/animations/simple-coding-animation";
+import { Heart, Sparkles, Code2, Dog, Users, ImageIcon } from "lucide-react";
 import { motion, useInView } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
-    const { showSuccess } = useSuccessDialog();
     const [detailOpen, setDetailOpen] = useState(false);
+    const [photoManagerOpen, setPhotoManagerOpen] = useState(false);
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'admin';
 
     // Refs for scroll animations - 三大模块
     const module1Ref = useRef(null);
@@ -71,122 +77,102 @@ export default function Home() {
         }
     } as const; return (
         <>
-            {/* ==================== 模块 1: 首屏欢迎 + Photo Carousel ==================== */}
+            {/* ==================== Hero Section - Beagle Design ==================== */}
             <motion.section
                 ref={module1Ref}
                 initial="hidden"
                 animate={module1InView ? "visible" : "hidden"}
-                className="relative min-h-screen flex flex-col justify-center"
+                className="relative min-h-screen flex flex-col justify-center py-20 overflow-hidden"
             >
-                {/* Geometric Background Pattern */}
-                <motion.div
-                    variants={fadeIn}
-                    className="absolute inset-0 -z-10"
-                >
-                    <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20"></div>
+                {/* Decorative Paw Prints - Organic Elements */}
+                <div className="absolute inset-0 pointer-events-none opacity-[0.02]">
+                    <div className="absolute top-[10%] right-[15%] text-[5rem] transform -rotate-12">🐾</div>
+                    <div className="absolute top-[30%] right-[5%] text-[4rem] transform rotate-[25deg]">🐾</div>
+                    <div className="absolute bottom-[20%] right-[20%] text-[6rem] transform -rotate-[30deg]">🐾</div>
+                </div>
 
-                    {/* Animated Geometric shapes */}
-                    <motion.div
-                        initial={{ opacity: 0, rotate: 0, scale: 0.8 }}
-                        animate={module1InView ? { opacity: 0.3, rotate: 45, scale: 1 } : {}}
-                        transition={{ duration: 1.5, delay: 0.3 }}
-                        className="absolute top-20 left-10 w-32 h-32 border-2 border-blue-200/30 rounded-3xl"
-                    />
-                    <motion.div
-                        initial={{ opacity: 0, rotate: 0, scale: 0.8 }}
-                        animate={module1InView ? { opacity: 0.3, rotate: 12, scale: 1 } : {}}
-                        transition={{ duration: 1.5, delay: 0.5 }}
-                        className="absolute top-40 right-20 w-24 h-24 border-2 border-purple-200/30 rounded-2xl"
-                    />
-                    <motion.div
-                        initial={{ opacity: 0, rotate: 0, scale: 0.8 }}
-                        animate={module1InView ? { opacity: 0.3, rotate: -12, scale: 1 } : {}}
-                        transition={{ duration: 1.5, delay: 0.7 }}
-                        className="absolute bottom-40 left-1/4 w-20 h-20 border-2 border-indigo-200/30 rounded-xl"
-                    />
-
-                    {/* Paw prints decoration */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-                        animate={module1InView ? { opacity: 0.03, scale: 1, rotate: 12 } : {}}
-                        transition={{ duration: 1.2, delay: 0.4 }}
-                        className="absolute top-1/4 right-1/3"
-                    >
-                        <Dog className="w-24 h-24 text-gray-900" />
-                    </motion.div>
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-                        animate={module1InView ? { opacity: 0.03, scale: 1, rotate: -45 } : {}}
-                        transition={{ duration: 1.2, delay: 0.6 }}
-                        className="absolute bottom-1/3 left-1/4"
-                    >
-                        <Dog className="w-32 h-32 text-gray-900" />
-                    </motion.div>
-                </motion.div>
-
-                {/* Hero Content */}
-                <div className="w-full px-4 md:px-20 2xl:px-60 py-16 md:py-24">
+                {/* Main Content Container */}
+                <div className="max-w-beagle mx-auto px-8 w-full">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
                         animate={module1InView ? "visible" : "hidden"}
-                        className="max-w-7xl mx-auto"
+                        className="grid lg:grid-cols-[1fr_1.2fr] gap-16 items-center"
                     >
-                        <div className="text-center space-y-6 mb-16">
-                            <motion.div
-                                variants={fadeInUp}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-gray-200/50 shadow-sm"
-                            >
-                                <Sparkles className="w-4 h-4 text-amber-500" />
-                                <span className="text-sm font-medium text-gray-700">Welcome to Our World</span>
+                        {/* Left: Hero Content */}
+                        <div className="space-y-8">
+                            <motion.div variants={fadeInUp}>
+                                <Badge variant="default" className="mb-4">
+                                    <Sparkles className="w-4 h-4 mr-2" />
+                                    Welcome to Our World
+                                </Badge>
                             </motion.div>
 
                             <motion.h1
                                 variants={fadeInUp}
-                                className="text-4xl md:text-6xl 2xl:text-7xl font-extrabold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-900 bg-clip-text text-transparent leading-tight"
+                                className="text-5xl md:text-6xl lg:text-7xl font-black text-forest-green leading-tight"
                             >
-                                Wang Beagle's Digital Space
+                                Wang Beagle's
+                                <span className="text-gradient-orange block mt-2">
+                                    Digital Space
+                                </span>
                             </motion.h1>
 
                             <motion.p
                                 variants={fadeInUp}
-                                className="text-lg md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+                                className="text-xl md:text-2xl text-medium-text leading-relaxed"
                             >
-                                Just playing around here and with the cutest
-                                <span className="font-semibold text-blue-600"> TutongBrothers</span>
+                                Just playing around here with the cutest{" "}
+                                <span className="font-bold text-warm-orange">TutongBrothers</span>
                             </motion.p>
+
+                            <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
+                                <Link href="/blog">
+                                    <Button variant="accent" size="lg">
+                                        Explore Blogs
+                                    </Button>
+                                </Link>
+                                <Button variant="outline" size="lg">
+                                    Learn More
+                                </Button>
+                            </motion.div>
                         </div>
+
+                        {/* Right: Photo Carousel in Beautiful Card */}
+                        <motion.div variants={scaleIn} className="relative">
+                            <div className="rounded-beagle-xl shadow-beagle-xl overflow-hidden">
+                                <PhotoCarousel />
+                            </div>
+                            {/* Admin: Manage Photos Button */}
+                            {isAdmin && (
+                                <motion.div
+                                    variants={fadeInUp}
+                                    className="mt-4 flex justify-center"
+                                >
+                                    <Button
+                                        onClick={() => setPhotoManagerOpen(true)}
+                                        variant="secondary"
+                                        size="sm"
+                                        className="gap-2"
+                                    >
+                                        <ImageIcon className="w-4 h-4" />
+                                        manage photos
+                                    </Button>
+                                </motion.div>
+                            )}
+                        </motion.div>
                     </motion.div>
                 </div>
-
-                {/* Photo Carousel Section */}
-                <motion.div
-                    variants={scaleIn}
-                    initial="hidden"
-                    animate={module1InView ? "visible" : "hidden"}
-                    className="pb-20"
-                >
-                    <PhotoCarousel />
-                </motion.div>
             </motion.section>
 
-            {/* ==================== 模块 2: TutongBrothers 社交媒体 ==================== */}
+            {/* ==================== TutongBrothers Section - Beagle Design ==================== */}
             <motion.section
                 ref={module2Ref}
                 initial="hidden"
                 animate={module2InView ? "visible" : "hidden"}
-                className="relative min-h-screen flex items-center px-4 md:px-20 2xl:px-60 py-20 md:py-32"
+                className="py-section-lg mb-10"
             >
-                {/* Background decorations */}
-                <motion.div
-                    variants={fadeIn}
-                    className="absolute inset-0 -z-10"
-                >
-                    <div className="absolute top-10 right-10 w-40 h-40 bg-gradient-to-br from-blue-100/40 to-purple-100/40 rounded-full blur-3xl"></div>
-                    <div className="absolute bottom-20 left-10 w-56 h-56 bg-gradient-to-br from-pink-100/40 to-orange-100/40 rounded-full blur-3xl"></div>
-                </motion.div>
-
-                <div className="max-w-7xl mx-auto w-full">
+                <div className="max-w-beagle mx-auto px-8">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
@@ -194,96 +180,115 @@ export default function Home() {
                     >
                         {/* Section Header */}
                         <div className="text-center mb-16 space-y-6">
-                            <motion.div
-                                variants={fadeInUp}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-50 to-purple-50 rounded-full border border-pink-200/50"
-                            >
-                                <Heart className="w-4 h-4 text-pink-500" />
-                                <span className="text-sm font-semibold text-gray-700">Social Media Presence</span>
+                            <motion.div variants={fadeInUp}>
+                                <Badge variant="default" className="mb-4">
+                                    <Heart className="w-4 h-4 mr-2" />
+                                    Social Media Stars
+                                </Badge>
                             </motion.div>
 
                             <motion.h2
                                 variants={fadeInUp}
-                                className="text-4xl md:text-5xl 2xl:text-6xl font-bold text-gray-900"
+                                className="text-5xl md:text-6xl font-black text-forest-green"
                             >
-                                Meet the <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">TutongBrothers</span>
+                                Meet the{" "}
+                                <span className="text-gradient-orange">TutongBrothers</span>
                             </motion.h2>
 
                             <motion.p
                                 variants={fadeInUp}
-                                className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto"
+                                className="text-xl md:text-2xl text-medium-text max-w-3xl mx-auto leading-relaxed"
                             >
-                                Pet bloggers with over <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">300,000+</span> followers spreading joy across the Internet
+                                Pet bloggers with over{" "}
+                                <span className="font-bold text-warm-orange">300,000+</span>{" "}
+                                followers spreading joy across the Internet
                             </motion.p>
                         </div>
 
                         {/* Cards Grid */}
                         <motion.div
                             variants={staggerContainer}
-                            className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16"
+                            className="grid md:grid-cols-2 gap-8 mb-12"
                         >
                             {/* Max Card */}
-                            <motion.div variants={scaleIn} className="group relative">
-                                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl opacity-0 group-hover:opacity-100 blur transition-all duration-500"></div>
-                                <div className="relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
-                                    <Link href="https://weibo.com/u/5232941578" target="_blank" className="block">
-                                        <div className="relative overflow-hidden rounded-xl mb-4">
-                                            <img
-                                                className="w-full h-auto transform group-hover:scale-105 transition-transform duration-500"
-                                                src="/weibo/maxu.png"
-                                                alt="Max"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                        </div>
-                                        <div className="flex items-center justify-between">
+                            <motion.div variants={scaleIn}>
+                                <Link
+                                    href="https://weibo.com/u/5232941578"
+                                    target="_blank"
+                                    className="block bg-white rounded-beagle-xl overflow-hidden shadow-beagle-lg hover:-translate-y-2 hover:shadow-beagle-xl transition-all duration-300 group"
+                                >
+                                    <div className="relative overflow-hidden h-fit">
+                                        <img
+                                            className="w-fit h-fit object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                            src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761118395/maxu_m8oz2a.png"
+                                            alt="Max"
+                                        />
+                                    </div>
+                                    <div className="p-8">
+                                        <div className="flex items-center justify-between mb-4">
                                             <div>
-                                                <h3 className="text-2xl font-bold text-gray-900 mb-1">Max</h3>
-                                                <p className="text-sm text-gray-500">@图桶宝贝</p>
+                                                <h3 className="text-3xl font-extrabold text-forest-green mb-1">Max</h3>
+                                                <p className="text-medium-text text-lg">@图桶宝贝</p>
                                             </div>
-                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                <Dog className="w-6 h-6 text-white" />
-                                            </div>
+                                            <Badge variant="secondary">
+                                                <Users className="w-3 h-3 mr-1" />
+                                                300K
+                                            </Badge>
                                         </div>
-                                    </Link>
-                                </div>
+                                        <p className="text-medium-text text-lg leading-relaxed">
+                                            "Recording the family of 3 beagles daily life❤(one beagle, one dachshund beagle, and one human beagle)"
+                                        </p>
+                                    </div>
+                                </Link>
                             </motion.div>
 
                             {/* Edward Card */}
-                            <motion.div variants={scaleIn} className="group relative">
-                                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl opacity-0 group-hover:opacity-100 blur transition-all duration-500"></div>
-                                <div className="relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
-                                    <Link href="https://weibo.com/u/2193725294" target="_blank" className="block">
-                                        <div className="relative overflow-hidden rounded-xl mb-4">
-                                            <img
-                                                className="w-full h-auto transform group-hover:scale-105 transition-transform duration-500"
-                                                src="/weibo/wangbige.png"
-                                                alt="Edward"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                        </div>
-                                        <div className="flex items-center justify-between">
+                            <motion.div variants={scaleIn}>
+                                <Link
+                                    href="https://weibo.com/u/2193725294"
+                                    target="_blank"
+                                    className="block bg-white rounded-beagle-xl overflow-hidden shadow-beagle-lg hover:-translate-y-2 hover:shadow-beagle-xl transition-all duration-300 group"
+                                >
+                                    <div className="relative overflow-hidden h-fit">
+                                        <img
+                                            className="w-fit h-fit object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                            src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761118395/wangbige_jfxtea.png"
+                                            alt="Edward"
+                                        />
+                                    </div>
+                                    <div className="p-8">
+                                        <div className="flex items-center justify-between mb-4">
                                             <div>
-                                                <h3 className="text-2xl font-bold text-gray-900 mb-1">Edward</h3>
-                                                <p className="text-sm text-gray-500">@王比格与胡比格</p>
+                                                <h3 className="text-3xl font-extrabold text-forest-green mb-1">Edward</h3>
+                                                <p className="text-medium-text text-lg">@王比格与胡比格</p>
                                             </div>
-                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                <Dog className="w-6 h-6 text-white" />
-                                            </div>
+                                            <Badge variant="secondary">
+                                                <Users className="w-3 h-3 mr-1" />
+                                                60K
+                                            </Badge>
                                         </div>
-                                    </Link>
-                                </div>
+                                        <p className="text-medium-text text-lg leading-relaxed">
+                                            Beagle sexy photographer capturing the secret of beagle life 📸 and the sexy moment of Tutongbrothers(laugh)
+                                        </p>
+                                    </div>
+                                </Link>
                             </motion.div>
                         </motion.div>
 
-                        {/* CTA Section */}
+                        {/* CTA Card */}
                         <motion.div variants={fadeInUp} className="text-center">
-                            <div className="inline-flex flex-col sm:flex-row items-center gap-4 p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl border border-gray-200/50">
-                                <p className="text-lg font-medium text-gray-700">
-                                    ✨ Discover their amazing journey
-                                </p>
+                            <div className="inline-flex flex-col sm:flex-row items-center gap-6 p-8 bg-white rounded-beagle-xl shadow-beagle-lg border-2 border-light-beige">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-14 h-14 rounded-full bg-gradient-accent flex items-center justify-center shadow-orange">
+                                        <Sparkles className="w-7 h-7 text-white" />
+                                    </div>
+                                    <p className="text-xl font-bold text-forest-green">
+                                        Discover their amazing journey
+                                    </p>
+                                </div>
                                 <Button
                                     onClick={() => setDetailOpen(true)}
-                                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                                    variant="accent"
                                     size="lg"
                                 >
                                     Learn More
@@ -294,152 +299,159 @@ export default function Home() {
                 </div>
             </motion.section>
 
-            {/* ==================== 模块 3: 开发者介绍 ==================== */}
+            {/* ==================== Developer Section - Dark Beagle Theme ==================== */}
             <motion.section
                 ref={module3Ref}
                 initial="hidden"
                 animate={module3InView ? "visible" : "hidden"}
-                className="relative min-h-screen flex items-center px-4 md:px-20 2xl:px-60 py-20 md:py-32 bg-gradient-to-b from-white to-slate-50"
+                className="py-section-lg bg-gradient-dark relative overflow-hidden"
             >
-                {/* Geometric Background Elements */}
-                <motion.div
-                    variants={fadeIn}
-                    className="absolute inset-0 -z-10 overflow-hidden"
-                >
-                    <div className="absolute top-1/4 left-0 w-72 h-72 bg-blue-100/20 rounded-full blur-3xl"></div>
-                    <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-100/20 rounded-full blur-3xl"></div>
+                {/* Large Decorative Paw Print */}
+                <div className="absolute right-[-50px] bottom-[-50px] text-[20rem] opacity-5 pointer-events-none transform -rotate-[15deg]">
+                    🐾
+                </div>
 
-                    {/* Code-themed geometric shapes */}
-                    <motion.div
-                        initial={{ opacity: 0, rotate: 0 }}
-                        animate={module3InView ? { opacity: 0.2, rotate: 45 } : {}}
-                        transition={{ duration: 1.5, delay: 0.3 }}
-                        className="absolute top-20 right-1/4 w-16 h-16 border-2 border-blue-300/20"
-                    />
-                    <motion.div
-                        initial={{ opacity: 0, rotate: 0 }}
-                        animate={module3InView ? { opacity: 0.2, rotate: -12 } : {}}
-                        transition={{ duration: 1.5, delay: 0.5 }}
-                        className="absolute bottom-40 left-1/3 w-12 h-12 border-2 border-purple-300/20 rounded-lg"
-                    />
-                    <motion.div
-                        initial={{ opacity: 0, rotate: 0 }}
-                        animate={module3InView ? { opacity: 0.3, rotate: 45 } : {}}
-                        transition={{ duration: 1.5, delay: 0.7 }}
-                        className="absolute top-1/2 left-1/4 w-8 h-8 bg-gradient-to-br from-blue-200/30 to-purple-200/30"
-                    />
-                </motion.div>
-
-                <div className="max-w-7xl mx-auto w-full">
+                <div className="max-w-beagle mx-auto px-8 py-10">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
                         animate={module3InView ? "visible" : "hidden"}
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+                        className="grid lg:grid-cols-2 gap-16 items-center"
                     >
-                        {/* Content Side */}
+                        {/* Left: Content */}
                         <div className="space-y-8">
-                            {/* Badge */}
-                            <motion.div
+                            <motion.div variants={fadeInUp}>
+                                <Badge variant="default" className="my-8">
+                                    <Code2 className="w-4 h-4 mr-2" />
+                                    Full-Stack Developer
+                                </Badge>
+                            </motion.div>
+
+                            <motion.h2
                                 variants={fadeInUp}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-blue-200/50 shadow-sm"
+                                className="text-5xl md:text-6xl font-black text-cream leading-tight"
                             >
-                                <Code2 className="w-4 h-4 text-blue-600" />
-                                <span className="text-sm font-semibold text-gray-700">Full-Stack Developer</span>
-                            </motion.div>
+                                Also, I'm a
+                                <span className="text-gradient-orange block mt-2">
+                                    Developer
+                                </span>
+                            </motion.h2>
 
-                            {/* Heading */}
-                            <motion.div variants={fadeInUp} className="space-y-4">
-                                <h2 className="text-4xl md:text-5xl 2xl:text-6xl font-extrabold text-gray-900 leading-tight">
-                                    Also, I'm a
-                                    <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mt-2">
-                                        Developer
-                                    </span>
-                                </h2>
+                            <motion.p
+                                variants={fadeInUp}
+                                className="text-xl md:text-2xl text-light-beige/90 leading-relaxed"
+                            >
+                                A passionate full-stack developer specializing in{" "}
+                                <span className="font-bold text-warm-orange">Java</span> backend
+                                and modern front-end with{" "}
+                                <span className="font-bold text-orange">React</span>.
+                            </motion.p>
 
-                                <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-xl">
-                                    A passionate full-stack developer specializing in
-                                    <span className="font-semibold text-blue-600"> Java</span> backend development
-                                    and modern front-end with
-                                    <span className="font-semibold text-purple-600"> React</span>.
-                                </p>
-                            </motion.div>
-
-                            {/* Tech Stack Section */}
-                            <motion.div variants={fadeInUp} className="space-y-4">
-                                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                            {/* Tech Stack Card */}
+                            <motion.div variants={fadeInUp}>
+                                <h3 className="text-sm font-semibold text-cream/80 uppercase tracking-wider mb-4">
                                     Tech Stack & Tools
                                 </h3>
-                                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-                                    <TechStack />
+
+                                <div className="glass rounded-beagle-lg p-6 border border-white/20 shadow-beagle-lg">
+                                    <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                                        {/* Tech Stack Button */}
+                                        <div className="shrink-0">
+                                            <TechStack />
+                                        </div>
+
+                                        {/* Description */}
+                                        <div className="flex-1">
+                                            <p className="text-[#344F1F] text-base leading-relaxed flex flex-wrap items-center gap-x-1">
+                                                This blog is powered by{" "}
+                                                <span className="font-bold text-[#F69221] flex items-center gap-1 whitespace-nowrap">
+                                                    React
+                                                    <img className="h-4 w-auto inline-block" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="react" />
+                                                </span>
+                                                ,{" "}
+                                                <span className="font-bold text-[#F69221] flex items-center gap-1 whitespace-nowrap">
+                                                    Next.js
+                                                    <img className="h-4 w-auto inline-block" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="nextjs" />
+                                                </span>
+                                                ,{" "}
+                                                <span className="font-bold text-[#F69221] flex items-center gap-1 whitespace-nowrap">
+                                                    Node.js
+                                                    <img className="h-4 w-auto inline-block" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original-wordmark.svg" alt="nodejs" />
+                                                </span>
+                                                ,{" "}
+                                                <span className="font-bold text-[#F69221] flex items-center gap-1 whitespace-nowrap">
+                                                    MongoDB
+                                                    <img className="h-4 w-auto inline-block" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" alt="mongodb" />
+                                                </span>
+                                                , and{" "}
+                                                <span className="font-bold text-[#F69221] flex items-center gap-1 whitespace-nowrap">
+                                                    Tailwind CSS
+                                                    <img className="h-4 w-auto inline-block" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="tailwind" />
+                                                </span>
+                                                , deployed on{" "}
+                                                <span className="font-bold text-[#F69221] whitespace-nowrap">Vercel ▲</span>.
+                                            </p>
+
+                                        </div>
+                                    </div>
                                 </div>
                             </motion.div>
 
-                            {/* Stats/Features Grid */}
+                            {/* Stats Grid */}
                             <motion.div
                                 variants={staggerContainer}
-                                className="grid grid-cols-2 gap-4 pt-4"
+                                className="grid grid-cols-2 gap-4"
                             >
-                                <motion.div
-                                    variants={scaleIn}
-                                    className="p-4 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl border border-blue-200/30"
-                                >
-                                    <div className="text-2xl font-bold text-blue-600 mb-1">3+</div>
-                                    <div className="text-sm text-gray-600">Years Experience</div>
+                                <motion.div variants={scaleIn}>
+                                    <div className="glass p-6 border border-white/20 hover:-translate-y-1 transition-transform duration-300">
+                                        <div className="text-4xl font-black text-warm-orange mb-2">3+</div>
+                                        <div className="text-base text-forest-green font-medium">Years Experience</div>
+                                    </div>
                                 </motion.div>
-                                <motion.div
-                                    variants={scaleIn}
-                                    className="p-4 bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl border border-purple-200/30"
-                                >
-                                    <div className="text-2xl font-bold text-purple-600 mb-1">10+</div>
-                                    <div className="text-sm text-gray-600">Projects Built</div>
+                                <motion.div variants={scaleIn}>
+                                    <div className="glass p-6 border border-white/20 hover:-translate-y-1 transition-transform duration-300">
+                                        <div className="text-4xl font-black text-orange mb-2">10+</div>
+                                        <div className="text-base text-forest-green font-medium">Projects Built</div>
+                                    </div>
                                 </motion.div>
                             </motion.div>
                         </div>
 
-                        {/* Avatar Side */}
-                        <motion.div
-                            variants={scaleIn}
-                            className="relative flex justify-center lg:justify-end"
-                        >
-                            {/* Decorative elements */}
+                        {/* Right: Avatar with decorative elements */}
+                        <motion.div variants={scaleIn} className="relative flex justify-center overflow-visible">
+                            {/* Glow effect */}
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-80 h-80 bg-gradient-to-br from-blue-200/20 via-purple-200/20 to-pink-200/20 rounded-full blur-3xl"></div>
+                                <div className="w-96 h-96 bg-warm-orange/20 rounded-full blur-3xl"></div>
                             </div>
 
-                            {/* Avatar with enhanced styling */}
-                            <div className="relative">
-                                <motion.div
-                                    animate={{
-                                        opacity: [0.15, 0.25, 0.15],
-                                    }}
-                                    transition={{
-                                        duration: 3,
-                                        repeat: Infinity,
-                                        ease: "easeInOut"
-                                    }}
-                                    className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-xl"
-                                />
-                                <div className="relative bg-white p-2 rounded-full shadow-2xl">
+                            {/* Coding Symbols Animation - Behind card */}
+                            <div className="absolute inset-0 w-full h-full">
+                                <SimpleCodingAnimation />
+                                {/* <CodingSymbolsAnimation /> */}
+                            </div>
+
+                            {/* Avatar Card */}
+                            <div className="relative z-10">
+                                <div className="bg-cream rounded-xl p-3 shadow-beagle-xl">
                                     <Avatar />
                                 </div>
 
-                                {/* Floating code elements */}
+                                {/* Floating icons with Beagle style */}
                                 <motion.div
-                                    initial={{ opacity: 0, y: 20, rotate: 0 }}
-                                    animate={module3InView ? { opacity: 1, y: 0, rotate: 12 } : {}}
-                                    transition={{ duration: 0.8, delay: 0.6 }}
-                                    className="absolute -top-6 -right-6 w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center border border-gray-100 hover:rotate-0 transition-transform duration-300"
+                                    initial={{ opacity: 0, y: 20, rotate: 12 }}
+                                    animate={module3InView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ duration: 0.6, delay: 0.4 }}
+                                    className="absolute -top-6 -right-6 w-16 h-16 bg-white    shadow-orange flex items-center justify-center hover:scale-110 transition-transform rounded-xl"
                                 >
-                                    <Code2 className="w-8 h-8 text-blue-600" />
+                                    <Code2 className="w-8 h-8 text-warm-orange" />
                                 </motion.div>
                                 <motion.div
-                                    initial={{ opacity: 0, y: 20, rotate: 0 }}
-                                    animate={module3InView ? { opacity: 1, y: 0, rotate: -12 } : {}}
-                                    transition={{ duration: 0.8, delay: 0.8 }}
-                                    className="absolute -bottom-6 -left-6 w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center border border-gray-100 hover:rotate-0 transition-transform duration-300"
+                                    initial={{ opacity: 0, y: 20, rotate: -12 }}
+                                    animate={module3InView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ duration: 0.6, delay: 0.6 }}
+                                    className="absolute -bottom-6 -left-6 w-16 h-16 bg-white    shadow-orange flex items-center justify-center hover:scale-110 transition-transform rounded-xl"
                                 >
-                                    <Dog className="w-8 h-8 text-purple-600" />
+                                    <Dog className="w-8 h-8 text-orange" />
                                 </motion.div>
                             </div>
                         </motion.div>
@@ -450,6 +462,11 @@ export default function Home() {
             {/* Tutong Details Modal */}
             {detailOpen && (
                 <Tutongdetails onClose={() => setDetailOpen(false)} />
+            )}
+
+            {/* Photo Manager Modal (Admin Only) */}
+            {photoManagerOpen && (
+                <PhotoManager onClose={() => setPhotoManagerOpen(false)} />
             )}
         </>
     );

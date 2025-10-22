@@ -161,7 +161,7 @@ export function BlogCard({ blog, onDeleted }: BlogCardProps) {
 
     return (
         <div
-            className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer h-fit"
+            className="glass border border-white/20 rounded-beagle-lg overflow-hidden shadow-beagle-md hover:shadow-beagle-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer h-fit"
 
         >
             {/* 博客头部 */}
@@ -199,8 +199,8 @@ export function BlogCard({ blog, onDeleted }: BlogCardProps) {
                         </Button>
                     )}
                 </div>
-                <h3 className="font-bold mt-2">{blog.title}</h3>
-                <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full mt-2">
+                <h3 className="font-bold mt-2 text-forest-green">{blog.title}</h3>
+                <span className="inline-block bg-light-beige text-forest-green text-xs font-semibold px-3 py-1.5 rounded-beagle-sm mt-2">
                     {blog.type}
                 </span>
             </div>
@@ -230,7 +230,7 @@ export function BlogCard({ blog, onDeleted }: BlogCardProps) {
                     {blog.images && blog.images.length > 1 && (
                         <div className="flex gap-2 mb-3">
                             {blog.images.slice(1, 4).map((image, index) => (
-                                <div key={index} className="aspect-square w-1/4 overflow-hidden rounded">
+                                <div key={index} className="aspect-square w-1/4 overflow-hidden rounded-beagle-sm shadow-beagle-sm">
                                     <img
                                         src={image}
                                         alt={`Blog image ${index + 2}`}
@@ -239,8 +239,8 @@ export function BlogCard({ blog, onDeleted }: BlogCardProps) {
                                 </div>
                             ))}
                             {blog.images.length > 4 && (
-                                <div className="aspect-square w-1/4 overflow-hidden rounded bg-gray-100 flex items-center justify-center">
-                                    <span className="text-xs text-gray-600">+{blog.images.length - 4}</span>
+                                <div className="aspect-square w-1/4 overflow-hidden rounded-beagle-sm bg-light-beige/50 border border-warm-orange/30 flex items-center justify-center">
+                                    <span className="text-xs text-forest-green font-bold">+{blog.images.length - 4}</span>
                                 </div>
                             )}
                         </div>

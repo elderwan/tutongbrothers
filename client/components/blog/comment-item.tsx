@@ -43,14 +43,17 @@ export default function CommentItem({
     };
 
     return (
-        <div className={`${isReply ? 'ml-6 border-l-2 border-gray-200 pl-3' : ''} mb-3`}>
+        <div
+            id={`comment-${comment._id}`}
+            className={`${isReply ? 'ml-6 border-l-2 border-gray-200 pl-3' : ''} mb-3 scroll-mt-20`}
+        >
             <div className="flex space-x-3">
                 <Avatar className="h-8 w-8 flex-shrink-0">
                     <AvatarImage src={comment.userImg} alt={comment.userName} />
                     <AvatarFallback>{comment?.userName.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                    <div className="bg-gray-100 rounded-lg p-3">
+                    <div className="bg-cream rounded-lg p-3">
                         <div className="flex items-baseline space-x-2 mb-1">
                             <p className="font-semibold text-sm">{comment.userName}</p>
                             <p className="text-xs text-gray-500">

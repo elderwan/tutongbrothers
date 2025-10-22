@@ -83,16 +83,12 @@ export function SuccessDialogProvider({ children }: SuccessDialogProviderProps) 
             <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
                 <AlertDialogContent className="mx-4 max-w-[calc(100vw-2rem)] sm:mx-auto sm:max-w-lg">
                     <AlertDialogHeader>
-                        <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
-                            <CheckCircle className="h-6 w-6 text-primary" />
-                            <AlertDialogTitle className="text-center sm:text-left text-primary">
-                                {success?.title}
-                            </AlertDialogTitle>
-                        </div>
-                        <AlertDialogDescription className="text-center sm:text-left">
-                            <div className="text-sm break-words text-primary">
-                                {success?.msg}
-                            </div>
+                        <AlertDialogTitle className="flex items-center justify-center sm:justify-start gap-2 text-center sm:text-left text-primary">
+                            <CheckCircle className="h-6 w-6" />
+                            <span>{success?.title}</span>
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-center sm:text-left text-sm break-words text-primary">
+                            {success?.msg}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter className="flex justify-center sm:justify-end">

@@ -198,7 +198,7 @@ export function MainCommentItem({
                     <AvatarFallback>{comment.userName.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                    <div className={compact ? "bg-gray-100 rounded-lg p-2" : "bg-gray-100 rounded-lg p-3"}>
+                    <div className={compact ? "bg-cream rounded-lg p-2" : "bg-cream rounded-lg p-3"}>
                         <div className="flex items-baseline justify-between mb-1">
                             <div className="flex items-baseline space-x-2">
                                 <p className={compact ? "font-semibold text-xs" : "font-semibold text-sm"}>{comment.userName}</p>

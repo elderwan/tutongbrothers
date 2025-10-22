@@ -86,7 +86,7 @@ export default function SigninDialog({ open, onOpenChange }: SigninDialogProps) 
                         className="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-gray-300"
                         aria-hidden="true"
                     >
-                        <img src="/avatar/mx96.jpg" className="w-11 h-11 rounded-full object-cover" alt="mx96" />
+                        <img src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116328/mx96_vdrocj.jpg" className="w-11 h-11 rounded-full object-cover" alt="mx96" />
                     </div>
                     <DialogHeader>
                         <DialogTitle className="sm:text-center">Welcome back</DialogTitle>

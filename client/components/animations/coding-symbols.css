@@ -1,0 +1,49 @@
+/* 编程符号动画 - 全局样式增强 */
+
+/* 提升动画性能 */
+@keyframes symbolGlow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 3px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 12px currentColor);
+  }
+}
+
+/* 备用方案：如果需要全局控制动画 */
+.coding-symbol {
+  font-family: "Courier New", "Monaco", "Consolas", monospace;
+  font-weight: 700;
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .coding-symbol {
+    font-size: 1.875rem; /* 30px */
+  }
+}
+
+@media (min-width: 769px) {
+  .coding-symbol {
+    font-size: 2.25rem; /* 36px */
+  }
+}
+
+/* 高性能模式：减少动画复杂度 */
+@media (prefers-reduced-motion: reduce) {
+  .coding-symbol {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
+/* 打印模式：隐藏装饰性动画 */
+@media print {
+  .coding-symbol-container {
+    display: none !important;
+  }
+}
