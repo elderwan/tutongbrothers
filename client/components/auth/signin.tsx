@@ -23,7 +23,7 @@ export default function Component({ open, onOpenChange }: SigninProps) {
             <DialogTrigger asChild>
                 <Button
                     size="sm"
-                    className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 max-sm:aspect-square"
+                    className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 px-2 sm:px-3 h-9"
                 >
                     <LogIn
                         className="opacity-60 sm:-ms-1"

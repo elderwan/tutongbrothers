@@ -47,8 +47,8 @@ export default function Component() {
   }, []);
 
   return (
-    <header className="border-b px-2 md:px-20 lg:px-60 bg-[#F7F2E8]/90 sticky top-0 z-50">
-      <div className="flex h-16 items-center justify-between gap-4">
+    <header className="border-b px-2 sm:px-4 md:px-8 lg:px-20 xl:px-60 bg-[#F7F2E8]/90 sticky top-0 z-50">
+      <div className="flex h-16 items-center justify-between gap-2 sm:gap-4">
         {/* Left side */}
 
         <div className="flex flex-1 items-center gap-2">

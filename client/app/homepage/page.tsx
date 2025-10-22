@@ -92,12 +92,12 @@ export default function Home() {
                 </div>
 
                 {/* Main Content Container */}
-                <div className="max-w-beagle mx-auto px-8 w-full">
+                <div className="max-w-beagle mx-auto px-4 sm:px-6 md:px-8 w-full">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
                         animate={module1InView ? "visible" : "hidden"}
-                        className="grid lg:grid-cols-[1fr_1.2fr] gap-16 items-center"
+                        className="grid lg:grid-cols-[1fr_1.2fr] gap-8 md:gap-12 lg:gap-16 items-center"
                     >
                         {/* Left: Hero Content */}
                         <div className="space-y-8">
@@ -110,7 +110,7 @@ export default function Home() {
 
                             <motion.h1
                                 variants={fadeInUp}
-                                className="text-5xl md:text-6xl lg:text-7xl font-black text-forest-green leading-tight"
+                                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-forest-green leading-tight break-words"
                             >
                                 Wang Beagle's
                                 <span className="text-gradient-orange block mt-2">
@@ -120,7 +120,7 @@ export default function Home() {
 
                             <motion.p
                                 variants={fadeInUp}
-                                className="text-xl md:text-2xl text-medium-text leading-relaxed"
+                                className="text-base sm:text-lg md:text-xl lg:text-2xl text-medium-text leading-relaxed break-words"
                             >
                                 Just playing around here with the cutest{" "}
                                 <span className="font-bold text-warm-orange">TutongBrothers</span>
@@ -172,7 +172,7 @@ export default function Home() {
                 animate={module2InView ? "visible" : "hidden"}
                 className="py-section-lg mb-10"
             >
-                <div className="max-w-beagle mx-auto px-8">
+                <div className="max-w-beagle mx-auto px-4 sm:px-6 md:px-8">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
@@ -189,7 +189,7 @@ export default function Home() {
 
                             <motion.h2
                                 variants={fadeInUp}
-                                className="text-5xl md:text-6xl font-black text-forest-green"
+                                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-forest-green break-words"
                             >
                                 Meet the{" "}
                                 <span className="text-gradient-orange">TutongBrothers</span>
@@ -197,7 +197,7 @@ export default function Home() {
 
                             <motion.p
                                 variants={fadeInUp}
-                                className="text-xl md:text-2xl text-medium-text max-w-3xl mx-auto leading-relaxed"
+                                className="text-base sm:text-lg md:text-xl lg:text-2xl text-medium-text max-w-3xl mx-auto leading-relaxed break-words px-4"
                             >
                                 Pet bloggers with over{" "}
                                 <span className="font-bold text-warm-orange">300,000+</span>{" "}
@@ -208,7 +208,7 @@ export default function Home() {
                         {/* Cards Grid */}
                         <motion.div
                             variants={staggerContainer}
-                            className="grid md:grid-cols-2 gap-8 mb-12"
+                            className="grid md:grid-cols-2 gap-6 md:gap-8 mb-12"
                         >
                             {/* Max Card */}
                             <motion.div variants={scaleIn}>
@@ -217,25 +217,25 @@ export default function Home() {
                                     target="_blank"
                                     className="block bg-white rounded-beagle-xl overflow-hidden shadow-beagle-lg hover:-translate-y-2 hover:shadow-beagle-xl transition-all duration-300 group"
                                 >
-                                    <div className="relative overflow-hidden h-fit">
+                                    <div className="relative overflow-hidden aspect-square">
                                         <img
-                                            className="w-fit h-fit object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                             src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761118395/maxu_m8oz2a.png"
                                             alt="Max"
                                         />
                                     </div>
-                                    <div className="p-8">
+                                    <div className="p-4 sm:p-6 md:p-8">
                                         <div className="flex items-center justify-between mb-4">
                                             <div>
-                                                <h3 className="text-3xl font-extrabold text-forest-green mb-1">Max</h3>
-                                                <p className="text-medium-text text-lg">@图桶宝贝</p>
+                                                <h3 className="text-2xl sm:text-3xl font-extrabold text-forest-green mb-1">Max</h3>
+                                                <p className="text-medium-text text-base sm:text-lg break-words">@图桶宝贝</p>
                                             </div>
                                             <Badge variant="secondary">
                                                 <Users className="w-3 h-3 mr-1" />
                                                 300K
                                             </Badge>
                                         </div>
-                                        <p className="text-medium-text text-lg leading-relaxed">
+                                        <p className="text-medium-text text-base sm:text-lg leading-relaxed break-words">
                                             "Recording the family of 3 beagles daily life❤(one beagle, one dachshund beagle, and one human beagle)"
                                         </p>
                                     </div>
@@ -249,25 +249,25 @@ export default function Home() {
                                     target="_blank"
                                     className="block bg-white rounded-beagle-xl overflow-hidden shadow-beagle-lg hover:-translate-y-2 hover:shadow-beagle-xl transition-all duration-300 group"
                                 >
-                                    <div className="relative overflow-hidden h-fit">
+                                    <div className="relative overflow-hidden aspect-square">
                                         <img
-                                            className="w-fit h-fit object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                             src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761118395/wangbige_jfxtea.png"
                                             alt="Edward"
                                         />
                                     </div>
-                                    <div className="p-8">
+                                    <div className="p-4 sm:p-6 md:p-8">
                                         <div className="flex items-center justify-between mb-4">
                                             <div>
-                                                <h3 className="text-3xl font-extrabold text-forest-green mb-1">Edward</h3>
-                                                <p className="text-medium-text text-lg">@王比格与胡比格</p>
+                                                <h3 className="text-2xl sm:text-3xl font-extrabold text-forest-green mb-1">Edward</h3>
+                                                <p className="text-medium-text text-base sm:text-lg break-words">@王比格与胡比格</p>
                                             </div>
                                             <Badge variant="secondary">
                                                 <Users className="w-3 h-3 mr-1" />
                                                 60K
                                             </Badge>
                                         </div>
-                                        <p className="text-medium-text text-lg leading-relaxed">
+                                        <p className="text-medium-text text-base sm:text-lg leading-relaxed break-words">
                                             Beagle sexy photographer capturing the secret of beagle life 📸 and the sexy moment of Tutongbrothers(laugh)
                                         </p>
                                     </div>
@@ -311,12 +311,12 @@ export default function Home() {
                     🐾
                 </div>
 
-                <div className="max-w-beagle mx-auto px-8 py-10">
+                <div className="max-w-beagle mx-auto px-4 sm:px-6 md:px-8 py-10">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
                         animate={module3InView ? "visible" : "hidden"}
-                        className="grid lg:grid-cols-2 gap-16 items-center"
+                        className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center"
                     >
                         {/* Left: Content */}
                         <div className="space-y-8">
@@ -329,7 +329,7 @@ export default function Home() {
 
                             <motion.h2
                                 variants={fadeInUp}
-                                className="text-5xl md:text-6xl font-black text-cream leading-tight"
+                                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-cream leading-tight break-words"
                             >
                                 Also, I'm a
                                 <span className="text-gradient-orange block mt-2">
@@ -339,7 +339,7 @@ export default function Home() {
 
                             <motion.p
                                 variants={fadeInUp}
-                                className="text-xl md:text-2xl text-light-beige/90 leading-relaxed"
+                                className="text-base sm:text-lg md:text-xl lg:text-2xl text-light-beige/90 leading-relaxed break-words"
                             >
                                 A passionate full-stack developer specializing in{" "}
                                 <span className="font-bold text-warm-orange">Java</span> backend
