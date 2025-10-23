@@ -57,6 +57,17 @@ render.yaml
 coverage/
 .nyc_output/
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+*.trace
+trace.zip
+test-results.json
+playwright-state.json
+
 # ============================================
 # Temporary & Cache
 # ============================================

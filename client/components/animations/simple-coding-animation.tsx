@@ -35,8 +35,8 @@ const SYMBOL_SIZE_MOBILE = 48   // 移动端：48px
 const SYMBOL_SIZE_DESKTOP = 60  // 桌面端：60px（已放大）
 
 // 📍 移动距离 - 符号扩散的距离（像素）
-const SPREAD_DISTANCE_MIN = 200  // 最短扩散距离
-const SPREAD_DISTANCE_MAX = 320  // 最长扩散距离
+const SPREAD_DISTANCE_MIN = 320  // 最短扩散距离
+const SPREAD_DISTANCE_MAX = 480  // 最长扩散距离
 
 // ============================================
 

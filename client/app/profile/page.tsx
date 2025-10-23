@@ -143,7 +143,7 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-white">
+            <div className="min-h-screen flex items-center justify-center bg-cream">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
             </div>
         );
@@ -151,7 +151,7 @@ export default function ProfilePage() {
 
     if (!profile) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-white">
+            <div className="min-h-screen flex items-center justify-center bg-cream">
                 <p className="text-gray-500">Profile not found</p>
             </div>
         );
@@ -159,7 +159,7 @@ export default function ProfilePage() {
 
     return (
         <>
-            <div className="min-h-screen bg-white">
+            <div className="min-h-screen bg-cream">
                 <div className="max-w-[600px] mx-auto border-x border-gray-200 min-h-screen">
                     {/* Header Banner */}
                     <div className="relative">
@@ -234,7 +234,7 @@ export default function ProfilePage() {
                                     <Button
                                         onClick={() => router.push("/profile/edit")}
                                         variant="outline"
-                                        className="rounded-full font-semibold bg-white hover:bg-gray-100 border-gray-300"
+                                        className=" cursor-pointer rounded-full font-semibold bg-white hover:bg-gray-100 hover:text-[#344F1F] border-gray-300"
                                         size="sm"
                                     >
                                         Edit profile

@@ -41,3 +41,16 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+playwright/.auth/
+*.trace
+trace.zip
+test-results.json
+playwright-state.json
+/playwright/.auth/

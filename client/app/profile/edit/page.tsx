@@ -335,7 +335,7 @@ export default function EditProfilePage() {
     }
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-cream">
             <div className="max-w-[600px] mx-auto border-x min-h-screen">
                 {/* Header */}
                 <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b">

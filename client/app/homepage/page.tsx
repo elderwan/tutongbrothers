@@ -1,5 +1,6 @@
 "use client"
 import Link from "next/link";
+import Image from "next/image";
 import PhotoCarousel from "@/components/media/photo-carousel";
 import Avatar from '@/components/layout/avatar'
 import { Button } from "@/components/ui/button"
@@ -82,7 +83,7 @@ export default function Home() {
                 ref={module1Ref}
                 initial="hidden"
                 animate={module1InView ? "visible" : "hidden"}
-                className="relative min-h-screen flex flex-col justify-center py-20 overflow-hidden"
+                className="relative min-h-screen flex flex-col justify-center py-10 overflow-hidden"
             >
                 {/* Decorative Paw Prints - Organic Elements */}
                 <div className="absolute inset-0 pointer-events-none opacity-[0.02]">
@@ -92,12 +93,12 @@ export default function Home() {
                 </div>
 
                 {/* Main Content Container */}
-                <div className="max-w-beagle mx-auto px-4 sm:px-6 md:px-8 w-full">
+                <div className="max-w-beagle mx-auto px-4 sm:px-6 md:px-8 w-full overflow-hidden">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
                         animate={module1InView ? "visible" : "hidden"}
-                        className="grid lg:grid-cols-[1fr_1.2fr] gap-8 md:gap-12 lg:gap-16 items-center"
+                        className="grid lg:grid-cols-[1fr_1.2fr] gap-8 md:gap-12 lg:gap-16 items-center w-full"
                     >
                         {/* Left: Hero Content */}
                         <div className="space-y-8">
@@ -132,15 +133,15 @@ export default function Home() {
                                         Explore Blogs
                                     </Button>
                                 </Link>
-                                <Button variant="outline" size="lg">
+                                <Button onClick={() => setDetailOpen(true)} variant="outline" size="lg">
                                     Learn More
                                 </Button>
                             </motion.div>
                         </div>
 
                         {/* Right: Photo Carousel in Beautiful Card */}
-                        <motion.div variants={scaleIn} className="relative">
-                            <div className="rounded-beagle-xl shadow-beagle-xl overflow-hidden">
+                        <motion.div variants={scaleIn} className="relative w-full max-w-full overflow-hidden">
+                            <div className="rounded-beagle-xl shadow-beagle-xl overflow-hidden w-full max-w-full">
                                 <PhotoCarousel />
                             </div>
                             {/* Admin: Manage Photos Button */}
@@ -217,11 +218,16 @@ export default function Home() {
                                     target="_blank"
                                     className="block bg-white rounded-beagle-xl overflow-hidden shadow-beagle-lg hover:-translate-y-2 hover:shadow-beagle-xl transition-all duration-300 group"
                                 >
-                                    <div className="relative overflow-hidden aspect-square">
-                                        <img
-                                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                    <div className="relative overflow-hidden bg-light-beige/30">
+                                        <Image
+                                            className="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-500"
                                             src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761118395/maxu_m8oz2a.png"
                                             alt="Max"
+                                            width={600}
+                                            height={400}
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
+                                            quality={85}
+                                            loading="lazy"
                                         />
                                     </div>
                                     <div className="p-4 sm:p-6 md:p-8">
@@ -249,11 +255,16 @@ export default function Home() {
                                     target="_blank"
                                     className="block bg-white rounded-beagle-xl overflow-hidden shadow-beagle-lg hover:-translate-y-2 hover:shadow-beagle-xl transition-all duration-300 group"
                                 >
-                                    <div className="relative overflow-hidden aspect-square">
-                                        <img
-                                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                    <div className="relative overflow-hidden bg-light-beige/30">
+                                        <Image
+                                            className="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-500"
                                             src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761118395/wangbige_jfxtea.png"
                                             alt="Edward"
+                                            width={600}
+                                            height={400}
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
+                                            quality={85}
+                                            loading="lazy"
                                         />
                                     </div>
                                     <div className="p-4 sm:p-6 md:p-8">
@@ -276,7 +287,7 @@ export default function Home() {
                         </motion.div>
 
                         {/* CTA Card */}
-                        <motion.div variants={fadeInUp} className="text-center">
+                        {/* <motion.div variants={fadeInUp} className="text-center">
                             <div className="inline-flex flex-col sm:flex-row items-center gap-6 p-8 bg-white rounded-beagle-xl shadow-beagle-lg border-2 border-light-beige">
                                 <div className="flex items-center gap-3">
                                     <div className="w-14 h-14 rounded-full bg-gradient-accent flex items-center justify-center shadow-orange">
@@ -294,7 +305,7 @@ export default function Home() {
                                     Learn More
                                 </Button>
                             </div>
-                        </motion.div>
+                        </motion.div> */}
                     </motion.div>
                 </div>
             </motion.section>
@@ -389,7 +400,7 @@ export default function Home() {
                                                     <img className="h-4 w-auto inline-block" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="tailwind" />
                                                 </span>
                                                 , deployed on{" "}
-                                                <span className="font-bold text-[#F69221] whitespace-nowrap">Vercel ▲</span>.
+                                                <span className="font-bold text-[#F69221] whitespace-nowrap">Vercel ▲</span> and  <span className="font-bold text-[#F69221] whitespace-nowrap">Render.</span>
                                             </p>
 
                                         </div>
@@ -410,7 +421,7 @@ export default function Home() {
                                 </motion.div>
                                 <motion.div variants={scaleIn}>
                                     <div className="glass p-6 border border-white/20 hover:-translate-y-1 transition-transform duration-300">
-                                        <div className="text-4xl font-black text-orange mb-2">10+</div>
+                                        <div className="text-4xl font-black text-orange mb-2">20+</div>
                                         <div className="text-base text-forest-green font-medium">Projects Built</div>
                                     </div>
                                 </motion.div>

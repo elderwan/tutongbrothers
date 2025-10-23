@@ -1,5 +1,6 @@
 "use client"
 import { useId } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -86,7 +87,15 @@ export default function SigninDialog({ open, onOpenChange }: SigninDialogProps) 
                         className="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-gray-300"
                         aria-hidden="true"
                     >
-                        <img src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116328/mx96_vdrocj.jpg" className="w-11 h-11 rounded-full object-cover" alt="mx96" />
+                        <Image
+                            src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116328/mx96_vdrocj.jpg"
+                            className="w-11 h-11 rounded-full object-cover"
+                            alt="mx96"
+                            width={44}
+                            height={44}
+                            quality={85}
+                            loading="lazy"
+                        />
                     </div>
                     <DialogHeader>
                         <DialogTitle className="sm:text-center">Welcome back</DialogTitle>

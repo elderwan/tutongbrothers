@@ -11,10 +11,10 @@ interface ImageUploadProps {
     maxImages?: number;
 }
 
-export default function ImageUpload({ 
-    images, 
-    onImagesChange, 
-    maxImages = 6 
+export default function ImageUpload({
+    images,
+    onImagesChange,
+    maxImages = 6
 }: ImageUploadProps) {
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -26,9 +26,9 @@ export default function ImageUpload({
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files || []);
-        
+
         if (files.length === 0) return;
-        
+
         // Check if adding these files would exceed the limit
         if (images.length + files.length > maxImages) {
             showError({
@@ -40,7 +40,7 @@ export default function ImageUpload({
         }
 
         setUploading(true);
-        
+
         try {
             const uploadPromises = files.map(async (file) => {
                 // Validate file type
@@ -75,7 +75,7 @@ export default function ImageUpload({
 
             const uploadedUrls = await Promise.all(uploadPromises);
             onImagesChange([...images, ...uploadedUrls]);
-            
+
             // Clear the file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
@@ -110,7 +110,7 @@ export default function ImageUpload({
                     variant="outline"
                     onClick={triggerFileSelect}
                     disabled={uploading || images.length >= maxImages}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-cream"
                 >
                     {uploading ? (
                         <>
@@ -124,7 +124,7 @@ export default function ImageUpload({
                         </>
                     )}
                 </Button>
-                
+
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -163,7 +163,7 @@ export default function ImageUpload({
 
             {/* Empty State */}
             {images.length === 0 && (
-                <div 
+                <div
                     className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-gray-400 transition-colors"
                     onClick={triggerFileSelect}
                 >

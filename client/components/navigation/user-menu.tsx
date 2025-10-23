@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import {
   BoltIcon,
   BookOpenIcon,
@@ -61,6 +62,9 @@ export default function UserProfileMenu() {
               <AvatarImage
                 src="https://res.cloudinary.com/dewxaup4t/image/upload/v1758264535/profile-user_vzeotq.png"
                 alt="Profile image"
+                sizes="32px"
+                quality={90}
+                priority={true}
               />
               <AvatarFallback>TT</AvatarFallback>
             </Avatar>
@@ -88,6 +92,9 @@ export default function UserProfileMenu() {
             <AvatarImage
               src={userData?.userImg || "https://res.cloudinary.com/dewxaup4t/image/upload/v1758264535/profile-user_vzeotq.png"}
               alt="Profile image"
+              sizes="32px"
+              quality={90}
+              priority={true}
             />
             <AvatarFallback>{getUserInitials()}</AvatarFallback>
           </Avatar>

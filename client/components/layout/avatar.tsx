@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from "react"
+import Image from "next/image"
 import {
   HoverCard,
   HoverCardContent,
@@ -24,12 +25,14 @@ export default function HoverCardDemo() {
         </div>
       )}
       <div className={`flex items-center justify-center ${showCloseButton ? "gap-4 md:gap-8" : "gap-8"}`}>
-        <img
+        <Image
           className="shrink-0 rounded-full border-forest-green/20 border-3 border-solid shadow-beagle-md"
           src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116329/detailAvatar_ehbdsf.png"
           width={showCloseButton ? 80 : 120}
           height={showCloseButton ? 80 : 120}
           alt="Avatar"
+          quality={90}
+          loading="lazy"
         />
         <div className={showCloseButton ? "space-y-2 md:space-y-3" : "space-y-3"}>
           <p className={`font-bold font-mono text-forest-green ${showCloseButton ? "text-lg md:text-2xl" : "text-2xl"}`}>Edward Won</p>
@@ -52,12 +55,14 @@ export default function HoverCardDemo() {
         <HoverCard openDelay={0} closeDelay={500}>
           <div className="flex items-center gap-8 font-mono sm:scale-100 scale-75">
             <HoverCardTrigger asChild>
-              <img
+              <Image
                 className="shrink-0 rounded-full border-gray-300 border-3 border-solid shadow-md cursor-pointer"
                 src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116330/avatar_q3e9wa.png"
                 width={160}
                 height={160}
                 alt="Avatar"
+                quality={90}
+                loading="lazy"
               />
             </HoverCardTrigger>
             <div className="space-y-3">
@@ -81,12 +86,14 @@ export default function HoverCardDemo() {
         <Popover open={open} onOpenChange={setOpen}>
           <div className="flex items-center gap-8 font-mono sm:scale-100 scale-75">
             <PopoverTrigger asChild>
-              <img
+              <Image
                 className="shrink-0 rounded-full border-gray-300 border-3 border-solid shadow-md cursor-pointer"
                 src="/avatar/avatar.png"
                 width={160}
                 height={160}
                 alt="Avatar"
+                quality={90}
+                loading="lazy"
               />
             </PopoverTrigger>
             <div className="space-y-3">

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { X } from 'lucide-react'
 import { ScrollArea } from "@/components/ui/scroll-area"
+import Image from 'next/image'
 
 
 type TutongdetailsProps = {
@@ -29,7 +30,7 @@ const Tutongdetails = ({ onClose }: TutongdetailsProps) => {
         >
             {/* 主内容框 */}
             <div
-                className="bg-white rounded-2xl shadow-2xl max-h-[85vh] overflow-hidden px-2 md:px-8 2xl:px-16 py-5 mx-4 w-full max-w-5xl border border-gray-100 transform transition-all duration-300 ease-out scale-100 animate-in fade-in-0 zoom-in-95"
+                className="bg-white rounded-sm shadow-2xl max-h-[85vh] overflow-hidden px-2 md:px-8 2xl:px-16 py-5 mx-4 w-full max-w-5xl border border-gray-100 transform transition-all duration-300 ease-out scale-100 animate-in fade-in-0 zoom-in-95"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* 头部标题和关闭按钮 */}
@@ -37,7 +38,7 @@ const Tutongdetails = ({ onClose }: TutongdetailsProps) => {
                     <h1 className="text-3xl font-bold text-gray-900 tracking-tight">TuTongbrothers</h1>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                        className="p-2 hover:bg-gray-100 rounded-sm transition-all duration-200 hover:scale-105 active:scale-95"
                         aria-label="关闭详情"
                     >
                         <X className="w-6 h-6 text-gray-500 hover:text-gray-700" />
@@ -48,14 +49,18 @@ const Tutongdetails = ({ onClose }: TutongdetailsProps) => {
                 <ScrollArea className="overflow-y-auto pr-2" style={{ maxHeight: 'calc(85vh - 120px)' }}>
                     {/* 第一条内容 - 左图右文 */}
                     <div className="mb-10">
-                        <div className="flex flex-col lg:flex-row gap-8 bg-[#fffeee]  rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <div className="flex flex-col lg:flex-row gap-8 bg-[#fffeee]  rounded-sm p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
                             {/* 左侧图片容器 */}
                             <div className="lg:w-1/3 relative group">
-                                <div className="relative overflow-hidden rounded-xl shadow-lg">
-                                    <img
+                                <div className="relative overflow-hidden rounded-sm shadow-lg">
+                                    <Image
                                         src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116439/huyitong_cemqp7.jpg"
                                         alt="huyitong"
                                         className="w-full h-72 lg:h-80 object-cover transition-transform duration-500 group-hover:scale-105"
+                                        width={400}
+                                        height={300}
+                                        loading="lazy"
+                                        quality={80}
                                     />
 
                                 </div>
@@ -81,21 +86,25 @@ const Tutongdetails = ({ onClose }: TutongdetailsProps) => {
                     <div className="flex items-center justify-center mb-10">
                         <div className="flex-grow h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
                         <div className="px-4">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-sm"></div>
                         </div>
                         <div className="flex-grow h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
                     </div>
 
                     {/* Second content - Right image, left text */}
                     <div className="mb-6">
-                        <div className="flex flex-col lg:flex-row-reverse gap-8 bg-gradient-to-l from-amber-50 to-orange-50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <div className="flex flex-col lg:flex-row-reverse gap-8 bg-gradient-to-l from-amber-50 to-orange-50 rounded-sm p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
                             {/* Right side image container */}
                             <div className="lg:w-1/3 relative group">
-                                <div className="relative overflow-hidden rounded-xl shadow-lg">
-                                    <img
+                                <div className="relative overflow-hidden rounded-sm shadow-lg">
+                                    <Image
                                         src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761116438/hututu_vmek7h.jpg"
                                         alt="hututu"
                                         className="w-full h-72 lg:h-80 object-cover transition-transform duration-500 group-hover:scale-105"
+                                        width={400}
+                                        height={300}
+                                        loading="lazy"
+                                        quality={80}
                                     />
 
                                 </div>

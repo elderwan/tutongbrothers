@@ -1,0 +1,157 @@
+{
+    "task": "修复 PhotoCarousel 组件的显示问题",
+    "problems": [
+        {
+            "issue": "小屏幕轮播图右侧被裁切",
+            "location": "主轮播容器",
+            "screenshot": "图1 - 竖屏照片右侧被容器边缘切掉",
+            "root_cause": "容器高度在小屏幕上设置为 h-[400px]，对于竖屏照片来说太矮了，导致使用 object-contain 时右侧超出被裁切"
+        },
+        {
+            "issue": "全屏模式照片显示不完整",
+            "location": "Fullscreen Modal 中的 Image 组件",
+            "screenshot": "图2 - 点击放大后照片上下被裁切",
+            "root_cause": [
+                "Image 组件使用了固定的 width={1200} height={1200}",
+                "与 max-h-[90vh] 和 aspect-auto 产生冲突",
+                "className 中的尺寸设置不正确"
+            ]
+        }
+    ],
+    "solutions": {
+        "issue_1_carousel_container": {
+            "description": "增加小屏幕容器高度，确保竖屏照片完整显示",
+            "changes": {
+                "file": "PhotoCarousel component",
+                "location": "第 100 行左右的主容器 div",
+                "current": "className=\"relative h-[400px] sm:h-[500spx] lg:h-[600px] ...\"",
+                "fix": "className=\"relative h-[500px] sm:h-[550px] lg:h-[600px] ...\"",
+                "note": "同时修正 sm:h-[500spx] 的拼写错误为 sm:h-[550px]"
+            }
+        },
+        "issue_2_fullscreen_image": {
+            "description": "修复全屏模式图片显示逻辑",
+            "changes": [
+                {
+                    "step": 1,
+                    "location": "Fullscreen Modal 中的容器 div",
+                    "current": "className=\"relative max-w-[90vw] max-h-[90vh] aspect-auto\"",
+                    "fix": "className=\"relative w-[90vw] h-[90vh]\"",
+                    "reason": "使用固定的视口比例，让 Image 组件内部自适应"
+                },
+                {
+                    "step": 2,
+                    "location": "Fullscreen Modal 中的 Image 组件",
+                    "current": {
+                        "width": "1200",
+                        "height": "1200",
+                        "className": "object-contain w-auto h-auto max-w-full max-h-[90vh]"
+                    },
+                    "fix": {
+                        "remove_props": [
+                            "width",
+                            "height"
+                        ],
+                        "add_prop": "fill={true}",
+                        "className": "object-contain"
+                    },
+                    "reason": "使用 fill 模式让图片填充父容器，配合 object-contain 完整显示"
+                }
+            ]
+        }
+    },
+    "code_modifications": {
+        "modification_1": {
+            "description": "修复主轮播容器高度",
+            "line_number": "~100",
+            "find": "className=\"relative h-[400px] sm:h-[500spx] lg:h-[600px] overflow-hidden bg-light-beige/30 w-full\"",
+            "replace": "className=\"relative h-[500px] sm:h-[550px] lg:h-[600px] overflow-hidden bg-light-beige/30 w-full\""
+        },
+        "modification_2": {
+            "description": "修复全屏模式容器",
+            "line_number": "~217",
+            "find": "<div\n    className=\"relative max-w-[90vw] max-h-[90vh] aspect-auto\"\n    onClick={(e) => e.stopPropagation()}\n>",
+            "replace": "<div\n    className=\"relative w-[90vw] h-[90vh]\"\n    onClick={(e) => e.stopPropagation()}\n>"
+        },
+        "modification_3": {
+            "description": "修复全屏模式图片组件",
+            "line_number": "~222",
+            "find": "<Image\n    src={currentPhoto.url}\n    alt=\"Fullscreen view\"\n    width={1200}\n    height={1200}\n    className=\"object-contain w-auto h-auto max-w-full max-h-[90vh]\"\n    sizes=\"90vw\"\n/>",
+            "replace": "<Image\n    src={currentPhoto.url}\n    alt=\"Fullscreen view\"\n    fill\n    className=\"object-contain\"\n    sizes=\"90vw\"\n/>"
+        }
+    },
+    "testing_checklist": [
+        {
+            "test": "小屏幕竖屏照片显示",
+            "steps": [
+                "在移动设备或浏览器开发工具中切换到手机视图",
+                "查看竖屏照片是否完整显示，右侧不被裁切",
+                "确认左右导航按钮可见且可点击"
+            ]
+        },
+        {
+            "test": "小屏幕横屏照片显示",
+            "steps": [
+                "确认横屏照片也能正常显示",
+                "上下应该有留白，使用模糊背景填充"
+            ]
+        },
+        {
+            "test": "全屏模式竖屏照片",
+            "steps": [
+                "点击竖屏照片进入全屏模式",
+                "确认照片完整显示，上下不被裁切",
+                "左右应该有留白空间"
+            ]
+        },
+        {
+            "test": "全屏模式横屏照片",
+            "steps": [
+                "点击横屏照片进入全屏模式",
+                "确认照片完整显示，左右不被裁切",
+                "上下应该有留白空间"
+            ]
+        },
+        {
+            "test": "不同设备尺寸",
+            "devices": [
+                "iPhone SE (375px)",
+                "iPhone 12 Pro (390px)",
+                "iPad (768px)",
+                "Desktop (1200px+)"
+            ]
+        },
+        {
+            "test": "轮播功能",
+            "steps": [
+                "确认自动播放正常",
+                "确认左右按钮切换正常",
+                "确认点状指示器正常",
+                "确认鼠标悬停暂停功能正常"
+            ]
+        }
+    ],
+    "additional_improvements": {
+        "optional": [
+            {
+                "improvement": "移动端优化导航按钮",
+                "reason": "小屏幕上箭头可能遮挡照片内容",
+                "suggestion": "可以考虑在移动端隐藏箭头，只显示点状指示器和滑动手势"
+            },
+            {
+                "improvement": "添加触摸滑动支持",
+                "reason": "移动端用户习惯滑动切换",
+                "suggestion": "使用 touch events 或引入 swiper 库"
+            }
+        ]
+    },
+    "prompt_for_vscode_chat": "我的 Next.js PhotoCarousel 组件有两个显示问题需要修复：\n\n问题1：在小屏幕（手机）上，竖屏照片的右侧被容器边缘裁切了。当前容器高度是 h-[400px]，对竖屏照片太矮。\n\n问题2：点击照片进入全屏模式后，照片仍然显示不完整，上下被裁切。当前全屏模式的 Image 组件使用了固定的 width={1200} height={1200}，与 max-h-[90vh] 冲突。\n\n请帮我修复：\n1. 增加小屏幕容器高度到 h-[500px]，修正拼写错误 sm:h-[500spx] 为 sm:h-[550px]\n2. 全屏模式容器改为 w-[90vw] h-[90vh]\n3. 全屏模式的 Image 组件改用 fill={true}，移除固定的 width 和 height，className 简化为 'object-contain'\n4. 确保所有照片（横屏和竖屏）在轮播和全屏模式下都能完整显示",
+    "files_to_modify": [
+        "PhotoCarousel.tsx (或 .jsx)"
+    ],
+    "expected_results": {
+        "carousel": "竖屏和横屏照片在所有屏幕尺寸下都完整显示，使用模糊背景填充空白区域",
+        "fullscreen": "点击照片后全屏显示完整图片，无任何裁切，照片完全适配 90vh × 90vw 的显示区域",
+        "responsive": "在 iPhone、iPad、Desktop 等不同设备上表现一致"
+    }
+}

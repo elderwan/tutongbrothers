@@ -143,10 +143,10 @@ export default function PostBlogPage() {
                             Type
                         </label>
                         <Select value={type} onValueChange={setType}>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-[#FFFFFF]">
                                 <SelectValue placeholder="Select blog type" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-[#FFFFFF]">
                                 {blogTypes.map((blogType) => (
                                     <SelectItem key={blogType.value} value={blogType.value}>
                                         {blogType.label}

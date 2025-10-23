@@ -149,7 +149,7 @@ export default function UserProfilePage() {
 
     return (
         <>
-            <div className="min-h-screen bg-white">
+            <div className="min-h-screen bg-cream">
                 <div className="max-w-[600px] mx-auto border-x border-gray-200 min-h-screen">
                     {/* Back Button */}
                     <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200 px-4 py-3 flex items-center gap-4">
@@ -181,7 +181,13 @@ export default function UserProfilePage() {
                         {/* Avatar */}
                         <div className="absolute -bottom-16 left-4">
                             <Avatar className="h-32 w-32 border-4 border-white">
-                                <AvatarImage src={profile.userImg} alt={profile.userName} />
+                                <AvatarImage
+                                    src={profile.userImg}
+                                    alt={profile.userName}
+                                    sizes="128px"
+                                    quality={95}
+                                    priority
+                                />
                                 <AvatarFallback className="text-4xl bg-gray-200">{profile.userName?.charAt(0)}</AvatarFallback>
                             </Avatar>
                         </div>
@@ -322,7 +328,12 @@ export default function UserProfilePage() {
                                         className="w-full flex items-center gap-3 px-6 py-3 hover:bg-gray-50 transition-colors text-left"
                                     >
                                         <Avatar className="h-12 w-12">
-                                            <AvatarImage src={follower.userImg} alt={follower.userName} />
+                                            <AvatarImage
+                                                src={follower.userImg}
+                                                alt={follower.userName}
+                                                sizes="48px"
+                                                quality={85}
+                                            />
                                             <AvatarFallback>{follower.userName?.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div className="flex-1 min-w-0">
@@ -364,7 +375,12 @@ export default function UserProfilePage() {
                                         className="w-full flex items-center gap-3 px-6 py-3 hover:bg-gray-50 transition-colors text-left"
                                     >
                                         <Avatar className="h-12 w-12">
-                                            <AvatarImage src={user.userImg} alt={user.userName} />
+                                            <AvatarImage
+                                                src={user.userImg}
+                                                alt={user.userName}
+                                                sizes="48px"
+                                                quality={85}
+                                            />
                                             <AvatarFallback>{user.userName?.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div className="flex-1 min-w-0">
