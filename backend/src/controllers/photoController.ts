@@ -33,7 +33,7 @@ export const uploadPhoto = async (req: Request, res: Response) => {
 
         await photo.save();
 
-        res.status(201).json({
+        res.status(200).json({
             code: 200,
             msg: 'Photo uploaded successfully',
             data: photo

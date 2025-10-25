@@ -36,6 +36,7 @@ export interface UpdateProfileRequest {
     userImg?: string;
     userBanner?: string;
     userEmail?: string;
+    account?: string;
 }
 
 /**

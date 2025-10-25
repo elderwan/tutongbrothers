@@ -12,6 +12,9 @@ import { useErrorDialog } from "@/components/dialogs/error-dialog";
 import { dateFormat } from "@/lib/date";
 import { BlogCardHorizontal } from "@/components/blog/blog-card-horizontal";
 import { Blog, getBlogsByUserId } from "@/api/blog";
+import { Post, getUserPostsApi } from "@/api/post";
+import PostCardCompact from "@/components/post/post-card-compact";
+import PostDetailDialog from "@/components/post/post-detail-dialog";
 
 export default function UserProfilePage() {
     const router = useRouter();
@@ -30,13 +33,16 @@ export default function UserProfilePage() {
     const [following, setFollowing] = useState<FollowUser[]>([]);
     const [loadingFollowers, setLoadingFollowers] = useState(false);
     const [loadingFollowing, setLoadingFollowing] = useState(false);
-    const [loadingPosts, setLoadingPosts] = useState(false);
-    const [posts, setPosts] = useState<Blog[]>([]);
+    const [loadingContent, setLoadingContent] = useState(false);
+    const [blogs, setBlogs] = useState<Blog[]>([]);
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+    const [showPostDetail, setShowPostDetail] = useState(false);
 
     useEffect(() => {
         if (userId) {
             loadProfile();
-            loadPosts();
+            loadContent();
         }
     }, [userId]);
 
@@ -66,19 +72,25 @@ export default function UserProfilePage() {
         }
     };
 
-    const loadPosts = async () => {
-
+    const loadContent = async () => {
         try {
-            setLoadingPosts(true);
-            const response = await getBlogsByUserId(userId, 1, 20);
+            setLoadingContent(true);
+            
+            // Load blogs
+            const blogsResponse = await getBlogsByUserId(userId, 1, 50);
+            if (blogsResponse.code === 200) {
+                setBlogs(blogsResponse.data.blogs);
+            }
 
-            if (response.code === 200) {
-                setPosts(response.data.blogs);
+            // Load posts
+            const postsResponse = await getUserPostsApi(userId, 1, 50);
+            if (postsResponse.code === 200) {
+                setPosts(postsResponse.data.posts);
             }
         } catch (error) {
-            console.error("Failed to load posts:", error);
+            console.error("Failed to load content:", error);
         } finally {
-            setLoadingPosts(false);
+            setLoadingContent(false);
         }
     };
 
@@ -269,37 +281,74 @@ export default function UserProfilePage() {
                     {/* Posts placeholder */}
                     <div className="">
                         <div>
-                            {loadingPosts ? (
+                            {loadingContent ? (
                                 <div className="p-12 flex justify-center">
                                     <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                                 </div>
-                            ) : posts.length === 0 ? (
+                            ) : (blogs.length === 0 && posts.length === 0) ? (
                                 <div className="p-12 text-center text-gray-500">
                                     <p>No posts yet</p>
                                 </div>
                             ) : (
-                                posts.map(post => (
-                                    <BlogCardHorizontal
-                                        key={post._id}
-                                        id={post._id}
-                                        title={post.title}
-                                        content={post.content}
-                                        coverImage={post.images?.[0]}
-                                        author={{
-                                            id: typeof post.userId === 'string' ? post.userId : post.userId._id,
-                                            name: post.userName,
-                                            avatar: post.userImg
-                                        }}
-                                        createdAt={post.createdAt}
-                                        likes={post.likes?.length || 0}
-                                        comments={post.commentsCount || 0}
-                                        views={post.views || 0}
-                                        tags={[post.type]}
-                                    />
-                                ))
+                                // Combine blogs and posts, sort by createdAt
+                                [...blogs.map(b => ({ ...b, itemType: 'blog' as const })), 
+                                 ...posts.map(p => ({ ...p, itemType: 'post' as const }))]
+                                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                                    .map(item => (
+                                        item.itemType === 'blog' ? (
+                                            <BlogCardHorizontal
+                                                key={item._id}
+                                                id={item._id}
+                                                title={(item as any).title}
+                                                content={(item as any).content}
+                                                coverImage={item.images?.[0]}
+                                                author={{
+                                                    id: typeof (item as any).userId === 'string' ? (item as any).userId : (item as any).userId._id,
+                                                    name: item.userName,
+                                                    avatar: item.userImg
+                                                }}
+                                                createdAt={item.createdAt}
+                                                likes={item.likes?.length || 0}
+                                                comments={(item as any).comments?.length || 0}
+                                            />
+                                        ) : (
+                                            <div key={item._id} className="mb-6">
+                                                <PostCardCompact 
+                                                    post={{
+                                                        _id: item._id,
+                                                        content: (item as any).content,
+                                                        userName: item.userName,
+                                                        userImg: item.userImg,
+                                                        userId: typeof (item as any).userId === 'string' ? (item as any).userId : (item as any).userId?._id || '',
+                                                        images: item.images || [],
+                                                        likes: item.likes || [],
+                                                        comments: (item as any).comments || [],
+                                                        createdAt: item.createdAt,
+                                                        views: (item as any).views || 0
+                                                    }}
+                                                    onClick={(postId) => {
+                                                        setSelectedPostId(postId)
+                                                        setShowPostDetail(true)
+                                                    }}
+                                                    onDeleted={(postId) => {
+                                                        setPosts(posts.filter(p => p._id !== postId))
+                                                    }}
+                                                />
+                                            </div>
+                                        )
+                                    ))
                             )}
                         </div>
                     </div>
+
+                    {/* Post Detail Dialog */}
+                    {selectedPostId && (
+                        <PostDetailDialog
+                            open={showPostDetail}
+                            onOpenChange={setShowPostDetail}
+                            postId={selectedPostId}
+                        />
+                    )}
                 </div>
             </div>
 

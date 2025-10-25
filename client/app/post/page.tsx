@@ -70,7 +70,7 @@ export default function PostBlogPage() {
                 images: images
             });
 
-            if (response.code === 201) {
+            if (response.code === 200) {
                 // 如果成功，跳转到博客列表页面
                 router.push('/blog');
             } else {

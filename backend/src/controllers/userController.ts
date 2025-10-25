@@ -63,20 +63,20 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 export const signup = async (req: Request, res: Response): Promise<void> => {
 
     try {
-        const { userEmail, account, password, userName } = req.body;
+        const { userEmail, password, userName } = req.body;
         //check the input is empty
-        if (!userEmail || !account || !password || !userName) {
+        if (!userEmail || !password || !userName) {
             res.json(ApiResponse.badRequest("Please fill in all fields"));
             return;
         }
 
         // 先检查用户是否存在
         const existingUser = await User.findOne({
-            $or: [{ userEmail: userEmail }, { account: account }, { userName: userName }],
+            $or: [{ userEmail: userEmail }, { userName: userName }],
             isDeleted: { $ne: true }
         });
         if (existingUser) {
-            res.json(ApiResponse.badRequest("Email, userName or account already exists"));
+            res.json(ApiResponse.badRequest("Email or userName already exists"));
             return;
         }
 
@@ -102,6 +102,10 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         //generate userId
         const userCode = await generateUserId();
 
+        // 生成account: date + userCode (e.g., 20251025100000)
+        const dateStr = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 14);
+        const account = `${dateStr}${userCode}`;
+
         // 保存用户
         const newUser = new User({
 
@@ -115,7 +119,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         });
         await newUser.save();
 
-        res.json(ApiResponse.success("Signup successful", 201, {
+        res.json(ApiResponse.success("Signup successful", 200, {
             _id: newUser._id,
             userName: newUser.userName,
             userCode: newUser.userCode,
@@ -220,8 +224,22 @@ export const updateUserProfile = async (req: Request, res: Response): Promise<vo
             return;
         }
 
-        const { userName, userEmail, userDesc } = req.body;
+        const { userName, userEmail, userDesc, account } = req.body;
         const updateData: any = {};
+
+        // 检查 account 唯一性
+        if (account) {
+            const existingUser = await User.findOne({
+                account,
+                _id: { $ne: userId },
+                isDeleted: { $ne: true }
+            });
+            if (existingUser) {
+                res.status(400).json(ApiResponse.badRequest("Account already taken"));
+                return;
+            }
+            updateData.account = account;
+        }
 
         // 检查 userName 唯一性
         if (userName) {

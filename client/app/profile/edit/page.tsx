@@ -226,7 +226,8 @@ export default function EditProfilePage() {
             const response = await updateUserProfile({
                 userName: userName !== user?.userName ? userName : undefined,
                 userEmail: userEmail !== user?.userEmail ? userEmail : undefined,
-                userDesc
+                userDesc,
+                account: account !== user?.account ? account : undefined
             });
 
             if (response.code === 200) {
@@ -404,7 +405,7 @@ export default function EditProfilePage() {
                         <div>
                             <h2 className="text-lg font-semibold mb-4">Profile Information</h2>
 
-                            {/* Account (Read-only) */}
+                            {/* Account */}
                             <div className="space-y-2 mb-4">
                                 <Label htmlFor="account" className="text-gray-600 text-sm">
                                     Account
@@ -412,9 +413,13 @@ export default function EditProfilePage() {
                                 <Input
                                     id="account"
                                     value={account}
-                                    disabled
-                                    className="bg-gray-50 border-gray-200"
+                                    onChange={(e) => setAccount(e.target.value)}
+                                    placeholder="Enter your account"
+                                    className="border-gray-200"
                                 />
+                                <p className="text-xs text-muted-foreground">
+                                    Your unique account identifier
+                                </p>
                             </div>
 
                             {/* Username */}

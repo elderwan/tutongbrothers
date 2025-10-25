@@ -61,7 +61,7 @@ export const addMainComment = async (req: Request, res: Response): Promise<void>
             io.to(`blog:${blogId}`).emit("comment:new", { type: "main", data: mainComment });
         }
 
-        res.status(201).json(ApiResponse.success("Main comment added successfully", 201, mainComment));
+        res.status(200).json(ApiResponse.success("Main comment added successfully", 200, mainComment));
     } catch (error) {
         console.error(error);
         res.status(500).json(ApiResponse.internalError("Failed to add main comment"));
@@ -134,7 +134,7 @@ export const addReplyComment = async (req: Request, res: Response): Promise<void
             io.to(`blog:${blogId}`).emit("comment:new", { type: "reply", data: replyComment });
         }
 
-        res.status(201).json(ApiResponse.success("Reply comment added successfully", 201, replyComment));
+        res.status(200).json(ApiResponse.success("Reply comment added successfully", 200, replyComment));
     } catch (error) {
         console.error(error);
         res.status(500).json(ApiResponse.internalError("Failed to add reply comment"));

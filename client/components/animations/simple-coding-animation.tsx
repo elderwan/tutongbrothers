@@ -12,11 +12,13 @@ const SYMBOLS = [
     "string", "number", "boolean", "const", "let", "var", "function", "=>"
 ]
 
-// 🎨 颜色方案 - 修改符号颜色（支持任意颜色代码）
+// 🎨 颜色方案 - 像素风格配色（修改符号颜色）
 const COLORS = [
-    "#FF8C00",  // 橙色 - 呼应 Developer 主题
-    "#00FF00",  // 亮绿色 - 经典编程色
-    "#00FFFF"   // 青色 - 赛博朋克风格
+    "#FF006E",  // 粉红色 - 像素艺术风格
+    "#8338EC",  // 紫色 - 复古游戏色
+    "#3A86FF",  // 蓝色 - 经典像素蓝
+    "#FFBE0B",  // 金黄色 - 像素金色
+    "#FB5607"   // 橙红色 - 像素活力色
 ]
 
 // ⏱️ 动画时长 - 符号从出现到消失的时间（秒）
@@ -30,9 +32,9 @@ const MAX_SYMBOLS = 12
 const SPAWN_INTERVAL_MIN = 50  // 最短间隔（更快）
 const SPAWN_INTERVAL_MAX = 200  // 最长间隔
 
-// 📏 符号大小 - 字体尺寸（像素）
-const SYMBOL_SIZE_MOBILE = 48   // 移动端：48px
-const SYMBOL_SIZE_DESKTOP = 60  // 桌面端：60px（已放大）
+// 📏 符号大小 - 字体尺寸（像素）- 像素字体适合较小尺寸
+const SYMBOL_SIZE_MOBILE = 24   // 移动端：24px（像素字体最佳尺寸）
+const SYMBOL_SIZE_DESKTOP = 32  // 桌面端：32px（像素字体最佳尺寸）
 
 // 📍 移动距离 - 符号扩散的距离（像素）
 const SPREAD_DISTANCE_MIN = 320  // 最短扩散距离
@@ -137,19 +139,21 @@ export default function SimpleCodingAnimation() {
                         style={{
                             // 📏 响应式字体大小 - 根据屏幕调整
                             fontSize: `clamp(${SYMBOL_SIZE_MOBILE}px, 5vw, ${SYMBOL_SIZE_DESKTOP}px)`,
-                            fontFamily: "'Courier New', 'Monaco', 'Consolas', monospace",
+                            fontFamily: "'Press Start 2P', 'Courier New', 'Monaco', 'Consolas', monospace",
                             color: symbol.color,
-                            // 🌟 发光效果 - 三层光晕
+                            // 🌟 像素风格发光效果 - 硬边缘光晕
                             textShadow: `
-                                0 0 10px ${symbol.color}99, 
-                                0 0 20px ${symbol.color}66,
-                                0 0 30px ${symbol.color}33
+                                1px 1px 0px ${symbol.color}CC, 
+                                1px 1px 0px ${symbol.color}88,
+                                1px 1px 0px ${symbol.color}44
                             `,
                             // ⚙️ 缓动函数 - 使用自然的加速减速曲线，避免突变
                             animation: `symbolFloat-${symbol.id} ${symbol.duration}s ease-out forwards`,
                             willChange: "transform, opacity",
-                            filter: `drop-shadow(0 0 4px ${symbol.color})`,
-                            fontWeight: 900
+                            filter: `contrast(1.1) saturate(1.2)`,
+                            fontWeight: 700,
+                            imageRendering: "pixelated",
+                            WebkitFontSmoothing: "none"
                         }}
                     >
                         {symbol.char}

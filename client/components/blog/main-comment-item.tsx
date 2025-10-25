@@ -52,7 +52,7 @@ export function MainCommentItem({
                 content: replyContent,
             });
 
-            if (response.code === 201) {
+            if (response.code === 200) {
                 setReplyContent("");
                 setActiveReplyTargetId(null);
                 showSuccess({

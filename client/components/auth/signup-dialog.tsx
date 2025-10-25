@@ -32,7 +32,6 @@ export default function SignupDialog({ open, onOpenChange }: SignupDialogProps) 
 
   const [userEmail, setUserEmail] = useState("")
   const [userName, setUserName] = useState("")
-  const [account, setAccount] = useState("")
   const [password, setPassword] = useState("")
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
@@ -78,7 +77,7 @@ export default function SignupDialog({ open, onOpenChange }: SignupDialogProps) 
     return "Strong password"
   }
   async function handleSubmitSignup() {
-    if (!userEmail || !userName || !account || !password) {
+    if (!userEmail || !userName || !password) {
       showError({ code: 400, title: "Sign Up", msg: "please fill all fields" })
       return
     }
@@ -92,8 +91,8 @@ export default function SignupDialog({ open, onOpenChange }: SignupDialogProps) 
     }
     try {
       setSubmitting(true)
-      const res = await registerApi({ userEmail, userName, account, password })
-      if (res.code === 201 || res.code === 200) {
+      const res = await registerApi({ userEmail, userName, password })
+      if (res.code === 200) {
         showSuccess({
           title: "Sign Up",
           msg: "Sign up success!",
@@ -173,17 +172,9 @@ export default function SignupDialog({ open, onOpenChange }: SignupDialogProps) 
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                   />
-                </div>
-                <div className="*:not-first:mt-2">
-                  <Label htmlFor={`${id}-account`}>Account</Label>
-                  <Input
-                    id={`${id}-account`}
-                    placeholder="your account"
-                    type="text"
-                    required
-                    value={account}
-                    onChange={(e) => setAccount(e.target.value)}
-                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Your account will be auto-generated and can be edited later in profile settings
+                  </p>
                 </div>
                 {/* <div className="*:not-first:mt-2">
                   <Label htmlFor={`${id}-password`}>Password</Label>

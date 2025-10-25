@@ -319,6 +319,11 @@ export default function BlogDetailPage({ params }: { params: { id: string } }) {
                         </span>
                     </div>
 
+                    <div>
+                        {/* blog desc */}
+                        <p className="text-gray-700 mb-6">{blog.description}</p>
+                    </div>
+
                     {/* 图片画廊 */}
                     {blog.images && blog.images.length > 0 && (
                         <div className="mb-8">

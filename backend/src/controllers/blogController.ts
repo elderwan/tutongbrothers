@@ -56,7 +56,7 @@ export const createBlog = async (req: Request, res: Response): Promise<void> => 
             await Notification.insertMany(notifications);
         }
 
-        res.status(201).json(ApiResponse.success("Blog created successfully", 201, newBlog));
+        res.status(200).json(ApiResponse.success("Blog created successfully", 200, newBlog));
     } catch (error) {
         console.error(error);
         res.status(500).json(ApiResponse.internalError("Failed to create blog"));

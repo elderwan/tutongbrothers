@@ -24,7 +24,7 @@ export const createTechStack = async (req: Request, res: Response): Promise<void
         });
 
         await newTechCategory.save();
-        res.status(201).json(ApiResponse.success("Tech stack created successfully", 201, newTechCategory));
+        res.status(200).json(ApiResponse.success("Tech stack created successfully", 200, newTechCategory));
     } catch (error) {
         console.error(error);
         res.status(500).json(ApiResponse.internalError("Failed to create tech stack"));

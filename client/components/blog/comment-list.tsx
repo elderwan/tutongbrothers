@@ -158,9 +158,9 @@ export function CommentList({ blogId, onCommentUpdate, className }: CommentListP
                     socketRef.current.disconnect();
                     socketRef.current = null;
                 }
-            } catch {}
+            } catch { }
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [blogId]);
 
     // 添加主评论
@@ -175,7 +175,7 @@ export function CommentList({ blogId, onCommentUpdate, className }: CommentListP
                 content: newComment
             });
 
-            if (response.code === 201) {
+            if (response.code === 200) {
                 setNewComment("");
                 showSuccess({
                     title: "comment!",
@@ -235,7 +235,7 @@ export function CommentList({ blogId, onCommentUpdate, className }: CommentListP
                             placeholder="write a comment..."
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
-                            className="w-full border rounded-full px-4 py-2 text-sm 
+                            className="w-full bg-[#F9F5F0] border rounded-full px-4 py-2 text-sm 
                               focus:outline-none focus:ring-2 focus:ring-blue-500"
                             disabled={isSubmitting}
                         />
@@ -248,7 +248,7 @@ export function CommentList({ blogId, onCommentUpdate, className }: CommentListP
                         </Button>
                     </div>
                 </form>
-             
+
             )}
 
             {/* 评论列表 */}

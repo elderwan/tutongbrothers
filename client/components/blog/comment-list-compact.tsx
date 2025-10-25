@@ -63,7 +63,7 @@ export function CommentListCompact({ blogId, onCommentUpdate, className }: Comme
         userId: user.id as string,
         content: newComment,
       });
-      if (response.code === 201) {
+      if (response.code === 200) {
         setNewComment("");
         showSuccess({ title: "comment!", msg: "your comment has been posted" });
         loadComments(1);
