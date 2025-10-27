@@ -23,6 +23,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Wang Beagle's blog",
   description: "Tutongbrothers",
+  icons: {
+    icon: "https://res.cloudinary.com/dewxaup4t/image/upload/c_fill,g_auto,w_96,h_96,r_max,f_png,b_transparent/v1761116328/mx96_vdrocj.jpg",
+    shortcut: "https://res.cloudinary.com/dewxaup4t/image/upload/c_fill,g_auto,w_96,h_96,r_max,f_png,b_transparent/v1761116328/mx96_vdrocj.jpg",
+    apple: "https://res.cloudinary.com/dewxaup4t/image/upload/c_fill,g_auto,w_180,h_180,r_max,f_png,b_transparent/v1761116328/mx96_vdrocj.jpg",
+  },
 };
 
 export default function RootLayout({

@@ -11,7 +11,8 @@ import Tutongdetails from "@/components/media/tutong-details";
 import PhotoManager from "@/components/admin/photo-manager";
 
 import SimpleCodingAnimation from "@/components/animations/simple-coding-animation";
-import { Heart, Sparkles, Code2, Dog, Users, ImageIcon } from "lucide-react";
+// @ts-ignore: using deprecated Lucide brand icon
+import { Heart, Sparkles, Code2, Dog, Users, ImageIcon, Github, Linkedin } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -445,6 +446,31 @@ export default function Home() {
                             <div className="relative z-10">
                                 <div className="bg-cream rounded-xl p-3 shadow-beagle-xl">
                                     <Avatar />
+
+                                    {/* Social Media Links */}
+                                    <motion.div
+                                        variants={fadeInUp}
+                                        className="flex justify-center gap-4 mt-4 pt-4 border-t border-warm-orange/20"
+                                    >
+                                        <a
+                                            href="https://github.com/elderwan"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center justify-center w-10 h-10 bg-forest-green/10 hover:bg-forest-green/20 rounded-full transition-all duration-300 hover:scale-110 group"
+                                            aria-label="GitHub"
+                                        >
+                                            <Github className="w-5 h-5 text-forest-green group-hover:text-warm-orange transition-colors" />
+                                        </a>
+                                        <a
+                                            href="https://www.linkedin.com/in/edward-won-7473ba375/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center justify-center w-10 h-10 bg-forest-green/10 hover:bg-forest-green/20 rounded-full transition-all duration-300 hover:scale-110 group"
+                                            aria-label="LinkedIn"
+                                        >
+                                            <Linkedin className="w-5 h-5 text-forest-green group-hover:text-warm-orange transition-colors" />
+                                        </a>
+                                    </motion.div>
                                 </div>
 
                                 {/* Floating icons with Beagle style */}
