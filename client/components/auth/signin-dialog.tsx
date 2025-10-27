@@ -105,14 +105,17 @@ export default function SigninDialog({ open, onOpenChange }: SigninDialogProps) 
                     </DialogHeader>
                 </div>
 
-                <form className="space-y-5">
+                <form className="space-y-5" onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmitLogin();
+                }}>
                     <div className="space-y-4">
                         <div className="*:not-first:mt-2">
                             <Label htmlFor={`${id}-email`}>Email / account</Label>
                             <Input
                                 id={`${id}-email`}
                                 placeholder="example@google.com"
-                                type="email"
+                                type="text"
                                 required
                                 value={emailOrAccount}
                                 onChange={(e) => setEmailOrAccount(e.target.value)}
@@ -130,12 +133,13 @@ export default function SigninDialog({ open, onOpenChange }: SigninDialogProps) 
                             />
                         </div>
                     </div>
-                    <Button onClick={() => handleSubmitLogin()} type="button" className="w-full">
+                    <Button type="submit" className="w-full">
                         Sign in
                     </Button>
                     <div className="text-center text-sm">
                         <span className="text-muted-foreground">Don't have an account?</span>
                         <Button
+                            type="button"
                             variant="link"
                             className="px-1"
                             onClick={() => {
@@ -151,7 +155,7 @@ export default function SigninDialog({ open, onOpenChange }: SigninDialogProps) 
                 </form>
 
                 <div>
-                    <img className="rounded-2xl" src="/photo/tutonglogin.png" alt="tutonglogin" />                </div>
+                    <img className="rounded-2xl" src="https://res.cloudinary.com/dewxaup4t/image/upload/v1761542709/tutonglogin_vewgfs.png" alt="tutonglogin" />                </div>
 
             </DialogContent>
         </Dialog>
