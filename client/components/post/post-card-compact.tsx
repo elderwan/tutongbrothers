@@ -1,26 +1,25 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Heart, MessageCircle, X, Eye } from "lucide-react"
 import { useErrorDialog } from '@/components/dialogs/error-dialog'
 import { useSuccessDialog } from '@/components/dialogs/success-dialog'
 import { useConfirmDialog } from "@/components/dialogs/confirm-dialog"
-import { likePostApi, deletePostApi } from "@/api/post"
+import { likePostApi, deletePostApi, getPostCommentsCount } from "@/api/post"
 import { dateFormat } from "@/lib/date"
 import { useAuth } from '@/contexts/AuthContext'
 
 interface PostCardCompactProps {
   post: {
     _id: string
+    title: string
     content: string
     userName: string
     userImg: string
     userId: string
     images: string[]
     likes: string[]
-    comments: any[]
     createdAt: string
     views: number
   }
@@ -31,7 +30,7 @@ interface PostCardCompactProps {
 export default function PostCardCompact({ post, onDeleted, onClick }: PostCardCompactProps) {
   const [likesCount, setLikesCount] = useState(post.likes.length)
   const [isLiked, setIsLiked] = useState(false)
-  const [commentsCount, setCommentsCount] = useState(post.comments.length)
+  const [commentsCount, setCommentsCount] = useState(0)
   const { showSuccess } = useSuccessDialog()
   const { showError } = useErrorDialog()
   const { showConfirm } = useConfirmDialog()
@@ -41,11 +40,23 @@ export default function PostCardCompact({ post, onDeleted, onClick }: PostCardCo
 
   useEffect(() => {
     checkIsLiked()
+    loadCommentsCount()
   }, [])
 
   const checkIsLiked = () => {
     if (post.likes.includes(user?.id as string)) {
       setIsLiked(true)
+    }
+  }
+
+  const loadCommentsCount = async () => {
+    try {
+      const response = await getPostCommentsCount(post._id)
+      if (response.code === 200) {
+        setCommentsCount(response.data.total)
+      }
+    } catch (error) {
+      console.error("Failed to load comments count:", error)
     }
   }
 
@@ -86,20 +97,6 @@ export default function PostCardCompact({ post, onDeleted, onClick }: PostCardCo
     }
   }
 
-  const renderContentWithMentions = (text: string) => {
-    const parts = text.split(/(@\w+)/g)
-    return parts.map((part, i) => {
-      if (part.startsWith('@')) {
-        return (
-          <span key={i} className="text-accent hover:underline cursor-pointer">
-            {part}
-          </span>
-        )
-      }
-      return part
-    })
-  }
-
   const getBriefContent = (content: string) => {
     if (content.length > 100) {
       return content.substring(0, 100) + "..."
@@ -108,92 +105,81 @@ export default function PostCardCompact({ post, onDeleted, onClick }: PostCardCo
   }
 
   return (
-    <div 
-      className="glass border border-white/20 rounded-beagle-lg overflow-hidden shadow-beagle-md hover:shadow-beagle-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+    <div
+      className="p-4 hover:bg-gray-50 transition-shadow cursor-pointer bg-cream relative"
       onClick={() => onClick?.(post._id)}
     >
-      {/* Post Header */}
-      <div className="p-4 border-b">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={post.userImg} alt={post.userName} />
-              <AvatarFallback>{post.userName.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-medium">{post.userName}</p>
-              <p className="text-xs text-gray-500">
-                {dateFormat(post.createdAt)}
-              </p>
-            </div>
-          </div>
-          {isAuthor && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-500 hover:text-gray-700"
-              onClick={(e) => {
-                e.stopPropagation()
-                showConfirm({
-                  title: "Delete Post",
-                  msg: "Are you sure you want to delete this post? This action cannot be undone.",
-                  confirmText: "Confirm",
-                  cancelText: "Cancel",
-                  onConfirm: handleDelete,
-                })
-              }}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Single Preview Image */}
-      {post.images && post.images.length > 0 && (
-        <div className="aspect-video overflow-hidden">
-          <img
-            src={post.images[0]}
-            alt="Post preview"
-            className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-          />
-        </div>
+      {/* Delete button - Top left */}
+      {isAuthor && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 h-6 w-6 text-gray-400 hover:text-gray-600 hover:bg-cream z-10"
+          onClick={(e) => {
+            e.stopPropagation()
+            showConfirm({
+              title: "Delete Post",
+              msg: "Are you sure you want to delete this post? This action cannot be undone.",
+              confirmText: "Confirm",
+              cancelText: "Cancel",
+              onConfirm: handleDelete,
+            })
+          }}
+        >
+          <X className="h-3.5 w-3.5" />
+        </Button>
       )}
 
-      {/* Post Content */}
-      <div className="p-4">
-        <p className="text-sm text-gray-700 mb-3 whitespace-pre-wrap">
-          {renderContentWithMentions(getBriefContent(post.content))}
-        </p>
+      <div className="flex gap-3">
+        {/* Left: Content */}
+        <div className="flex-1 min-w-0">
+          {/* Title or Author */}
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="font-bold text-lg mb-1 line-clamp-2">
+              {post.title}
+            </h3>
 
-        {/* Action Bar */}
-        <div className="flex items-center justify-between pt-3 border-t">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center space-x-1"
+          </div>
+
+          {/* Excerpt */}
+          <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+            {getBriefContent(post.content)}
+          </p>
+
+          {/* Meta info */}
+          <div className="flex items-center gap-4 text-xs text-gray-500">
+            <span>{dateFormat(post.createdAt)}</span>
+            <button
+              className="flex items-center gap-1 hover:text-red-500 transition-colors"
               onClick={handleLike}
             >
-              <Heart className={`h-4 w-4 ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
+              <Heart className={`h-3 w-3 ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
               <span>{likesCount}</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center space-x-1"
-            >
-              <MessageCircle className="h-4 w-4" />
-              <span>{commentsCount}</span>
-            </Button>
+            </button>
+            <span className="flex items-center gap-1">
+              <MessageCircle className="h-3 w-3" />
+              {commentsCount}
+            </span>
+            {isAuthor && (
+              <span className="flex items-center gap-1">
+                <Eye className="h-3 w-3" />
+                {post.views}
+              </span>
+            )}
           </div>
-          {isAuthor && (
-            <div className="flex items-center space-x-1 text-xs text-gray-500">
-              <Eye className="h-3 w-3" />
-              <span>{post.views}</span>
-            </div>
-          )}
         </div>
+
+        {/* Right: Cover Image */}
+        {post.images && post.images.length > 0 && (
+          <div className="mr-6 w-24 h-24 flex-shrink-0">
+            <img
+              src={post.images[0]}
+              alt={post.title || "Post"}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
       </div>
     </div>
   )

@@ -8,7 +8,7 @@ import { Heart, MessageCircle, X, Eye } from "lucide-react"
 import { useErrorDialog } from '@/components/dialogs/error-dialog'
 import { useSuccessDialog } from '@/components/dialogs/success-dialog'
 import { useConfirmDialog } from "@/components/dialogs/confirm-dialog"
-import { likePostApi, deletePostApi } from "@/api/post"
+import { likePostApi, deletePostApi, getPostCommentsCount } from "@/api/post"
 import { dateFormat } from "@/lib/date"
 import { useAuth } from '@/contexts/AuthContext'
 import Link from "next/link"
@@ -16,13 +16,13 @@ import Link from "next/link"
 interface PostCardProps {
   post: {
     _id: string
+    title?: string
     content: string
     userName: string
     userImg: string
     userId: string
     images: string[]
     likes: string[]
-    comments: any[]
     createdAt: string
     views: number
   }
@@ -34,7 +34,7 @@ export default function PostCard({ post, onDeleted, onClick }: PostCardProps) {
   const router = useRouter()
   const [likesCount, setLikesCount] = useState(post.likes.length)
   const [isLiked, setIsLiked] = useState(false)
-  const [commentsCount, setCommentsCount] = useState(post.comments.length)
+  const [commentsCount, setCommentsCount] = useState(0)
   const { showSuccess } = useSuccessDialog()
   const { showError } = useErrorDialog()
   const { showConfirm } = useConfirmDialog()
@@ -44,11 +44,23 @@ export default function PostCard({ post, onDeleted, onClick }: PostCardProps) {
 
   useEffect(() => {
     checkIsLiked()
+    loadCommentsCount()
   }, [])
 
   const checkIsLiked = () => {
     if (post.likes.includes(user?.id as string)) {
       setIsLiked(true)
+    }
+  }
+
+  const loadCommentsCount = async () => {
+    try {
+      const response = await getPostCommentsCount(post._id)
+      if (response.code === 200) {
+        setCommentsCount(response.data.total)
+      }
+    } catch (error) {
+      console.error("Failed to load comments count:", error)
     }
   }
 
@@ -117,7 +129,7 @@ export default function PostCard({ post, onDeleted, onClick }: PostCardProps) {
   }
 
   return (
-    <div 
+    <div
       className="glass border border-white/20 rounded-beagle-lg overflow-hidden shadow-beagle-md hover:shadow-beagle-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
       onClick={handleCardClick}
     >
@@ -156,31 +168,42 @@ export default function PostCard({ post, onDeleted, onClick }: PostCardProps) {
             </Button>
           )}
         </div>
+        {post.title && <h3 className="font-bold mt-2 text-forest-green">{post.title}</h3>}
+        <span className="inline-block bg-light-beige text-forest-green text-xs font-semibold px-3 py-1.5 rounded-beagle-sm mt-2">
+          Short Post
+        </span>
       </div>
 
-      {/* Post Content - Text First */}
-      <div className="p-4">
-        <p className="text-sm text-gray-700 whitespace-pre-wrap">
-          {renderContentWithMentions(getBriefContent(post.content))}
-        </p>
-      </div>
 
       {/* Images Below - Max 9 with overlay on last */}
       {post.images && post.images.length > 0 && (
-        <div className="px-4 pb-4">
-          <div className={`grid gap-2 ${
-            post.images.length === 1 ? 'grid-cols-1' :
-            post.images.length === 2 ? 'grid-cols-2' :
-            'grid-cols-3'
-          }`}>
-            {post.images.slice(0, 9).map((image, index) => (
-              <div key={index} className="relative aspect-square overflow-hidden rounded-beagle-sm">
+        <div className="aspect-video overflow-hidden">
+          <img
+            src={post.images[0]}
+            alt="Post preview"
+            className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+      )}
+
+      {/* Post Content */}
+      <div className="p-4">
+        <p className="text-sm text-gray-700 mb-3 whitespace-pre-wrap">
+          {renderContentWithMentions(getBriefContent(post.content))}
+        </p>
+
+        {/* Extra images display (if more than 1) */}
+        {post.images && post.images.length > 1 && (
+          <div className={`grid gap-2 mb-3 ${post.images.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
+            }`}>
+            {post.images.slice(1, 9).map((image, index) => (
+              <div key={index} className="relative aspect-square overflow-hidden rounded-beagle-sm shadow-beagle-sm">
                 <img
                   src={image}
-                  alt={`Post image ${index + 1}`}
+                  alt={`Post image ${index + 2}`}
                   className="w-full h-full object-cover"
                 />
-                {index === 8 && post.images.length > 9 && (
+                {index === 7 && post.images.length > 9 && (
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                     <span className="text-white text-lg font-bold">+{post.images.length - 9}</span>
                   </div>
@@ -188,11 +211,9 @@ export default function PostCard({ post, onDeleted, onClick }: PostCardProps) {
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Action Bar */}
-      <div className="px-4 pb-4">
+        {/* Action Bar */}
         <div className="flex items-center justify-between pt-3 border-t">
           <div className="flex items-center space-x-4">
             <Button

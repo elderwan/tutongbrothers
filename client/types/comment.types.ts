@@ -9,11 +9,12 @@
 export interface ReplyComment {
     _id: string;
     parentId: string; // 主评论ID
-    blogId: string;
-    senderId: string;
+    blogId?: string; // 可选：所属博客ID
+    postId?: string; // 可选：所属帖子ID
+    sendUserId: string; // 发送者ID
     senderName: string;
     senderImg: string;
-    receiverId: string;
+    receiveUserId: string; // 接收者ID
     receiverName: string;
     receiverImg: string;
     content: string;
@@ -26,7 +27,8 @@ export interface ReplyComment {
  */
 export interface MainComment {
     _id: string;
-    blogId: string;
+    blogId?: string; // 可选：所属博客ID
+    postId?: string; // 可选：所属帖子ID
     userId: string;
     userName: string;
     userImg: string;

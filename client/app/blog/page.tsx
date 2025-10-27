@@ -27,13 +27,13 @@ interface Blog {
 
 interface Post {
     _id: string;
+    title?: string;
     content: string;
     userName: string;
     userImg: string;
     userId: string;
     images: string[];
     likes: string[];
-    comments: any[];
     views: number;
     createdAt: string;
     updatedAt: string;

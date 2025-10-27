@@ -86,7 +86,7 @@ export default function ProfilePage() {
 
         try {
             setLoadingContent(true);
-            
+
             // Load blogs
             const blogsResponse = await getBlogsByUserId(profile.id, 1, 50);
             if (blogsResponse.code === 200) {
@@ -303,8 +303,8 @@ export default function ProfilePage() {
                                 </div>
                             ) : (
                                 // Combine blogs and posts, sort by createdAt descending
-                                [...blogs.map(b => ({ ...b, itemType: 'blog' as const })), 
-                                 ...posts.map(p => ({ ...p, itemType: 'post' as const }))]
+                                [...blogs.map(b => ({ ...b, itemType: 'blog' as const })),
+                                ...posts.map(p => ({ ...p, itemType: 'post' as const }))]
                                     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                                     .map(item => (
                                         item.itemType === 'blog' ? (
@@ -324,31 +324,34 @@ export default function ProfilePage() {
                                                 comments={(item as any).commentsCount || (item as any).comments?.length || 0}
                                                 views={(item as any).views || 0}
                                                 tags={[(item as any).type]}
+                                                onDeleted={(blogId) => {
+                                                    setBlogs(blogs.filter(b => b._id !== blogId))
+                                                }}
                                             />
                                         ) : (
-                                            <div key={item._id} className="border-b border-gray-200 p-4">
-                                                <PostCardCompact 
-                                                    post={{
-                                                        _id: item._id,
-                                                        content: (item as any).content,
-                                                        userName: item.userName,
-                                                        userImg: item.userImg,
-                                                        userId: typeof (item as any).userId === 'string' ? (item as any).userId : (item as any).userId?._id || '',
-                                                        images: item.images || [],
-                                                        likes: item.likes || [],
-                                                        comments: (item as any).comments || [],
-                                                        createdAt: item.createdAt,
-                                                        views: (item as any).views || 0
-                                                    }}
-                                                    onClick={(postId) => {
-                                                        setSelectedPostId(postId)
-                                                        setShowPostDetail(true)
-                                                    }}
-                                                    onDeleted={(postId) => {
-                                                        setPosts(posts.filter(p => p._id !== postId))
-                                                    }}
-                                                />
-                                            </div>
+
+                                            <PostCardCompact
+                                                post={{
+                                                    _id: item._id,
+                                                    title: (item as any).title,
+                                                    content: (item as any).content,
+                                                    userName: item.userName,
+                                                    userImg: item.userImg,
+                                                    userId: typeof (item as any).userId === 'string' ? (item as any).userId : (item as any).userId?._id || '',
+                                                    images: item.images || [],
+                                                    likes: item.likes || [],
+                                                    createdAt: item.createdAt,
+                                                    views: (item as any).views || 0
+                                                }}
+                                                onClick={(postId) => {
+                                                    setSelectedPostId(postId)
+                                                    setShowPostDetail(true)
+                                                }}
+                                                onDeleted={(postId) => {
+                                                    setPosts(posts.filter(p => p._id !== postId))
+                                                }}
+                                            />
+
                                         )
                                     ))
                             )}

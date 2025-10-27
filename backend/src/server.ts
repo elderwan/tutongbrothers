@@ -23,6 +23,7 @@ import blogRoutes from "./routes/blogRoutes";
 import postRoutes from "./routes/postRoutes";
 import techStackRoutes from "./routes/techStackRoutes";
 import commentRoutes from "./routes/commentRoutes";
+import postCommentRoutes from "./routes/postCommentRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
 import photoRoutes from "./routes/photoRoutes";
 import { createServer } from "http";
@@ -56,7 +57,7 @@ app.use("/api/users", loginRoutes, userRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/tech-stack", techStackRoutes);
-app.use("/api/comments", commentRoutes);
+app.use("/api/comments", commentRoutes, postCommentRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/photos", photoRoutes);
 

@@ -100,7 +100,7 @@ const TechStack = () => {
                                             }}
                                             className="flex items-center gap-2 px-3 py-2 bg-light-beige border-2 border-transparent rounded-beagle-sm hover:bg-warm-orange hover:text-white transition-all duration-300 cursor-pointer"
                                         >
-                                           
+
                                             <Image
                                                 src={item.imgLink}
                                                 width={14}

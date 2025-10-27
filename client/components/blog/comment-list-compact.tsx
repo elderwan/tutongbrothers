@@ -42,7 +42,10 @@ export function CommentListCompact({ blogId, onCommentUpdate, className }: Comme
         } else {
           setComments((prev) => [...prev, ...response.data.comments]);
         }
-        setPagination(response.data.pagination);
+        setPagination({
+          ...response.data.pagination,
+          totalPages: response.data.pagination.pages
+        });
       } else {
         showError({ code: response.code, title: "load comments failed", msg: response.msg });
       }

@@ -197,69 +197,6 @@ export const toggleLikePost = async (req: Request, res: Response): Promise<void>
 };
 
 /**
- * Add comment to post
- */
-export const addCommentToPost = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const userId = (req as any).user?.id;
-        const { id } = req.params;
-        const { content, parentId } = req.body;
-
-        if (!userId) {
-            res.status(401).json(ApiResponse.unauthorized("Please login first"));
-            return;
-        }
-
-        if (!content) {
-            res.status(400).json(ApiResponse.badRequest("Content is required"));
-            return;
-        }
-
-        const post = await Post.findById(id);
-        if (!post) {
-            res.status(404).json(ApiResponse.notFound("Post not found"));
-            return;
-        }
-
-        const user = await User.findById(userId);
-        if (!user) {
-            res.status(404).json(ApiResponse.notFound("User not found"));
-            return;
-        }
-
-        const newComment = {
-            _id: new mongoose.Types.ObjectId(),
-            userId: user._id,
-            userName: user.userName,
-            userImg: user.userImg,
-            content,
-            parentId: parentId || null,
-            replies: [],
-            createdAt: new Date()
-        };
-
-        if (parentId) {
-            // Add as reply to parent comment
-            const parentComment = post.comments.find(c => c._id?.toString() === parentId);
-            if (parentComment) {
-                if (!parentComment.replies) parentComment.replies = [];
-                parentComment.replies.push(newComment as any);
-            }
-        } else {
-            // Add as top-level comment
-            post.comments.push(newComment as any);
-        }
-
-        await post.save();
-
-        res.status(200).json(ApiResponse.success("Comment added", 200, { comment: newComment }));
-    } catch (error) {
-        console.error(error);
-        res.status(500).json(ApiResponse.internalError("Failed to add comment", error));
-    }
-};
-
-/**
  * Get user's posts
  */
 export const getUserPosts = async (req: Request, res: Response): Promise<void> => {

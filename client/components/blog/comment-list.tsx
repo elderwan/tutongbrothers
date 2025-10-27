@@ -50,7 +50,10 @@ export function CommentList({ blogId, onCommentUpdate, className }: CommentListP
                 } else {
                     setComments(prev => [...prev, ...response.data.comments]);
                 }
-                setPagination(response.data.pagination);
+                setPagination({
+                    ...response.data.pagination,
+                    totalPages: response.data.pagination.pages
+                });
             } else {
                 showError({
                     code: response.code,

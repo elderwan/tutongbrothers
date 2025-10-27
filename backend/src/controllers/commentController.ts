@@ -129,8 +129,8 @@ export const addReplyComment = async (req: Request, res: Response): Promise<void
 
         // 通过 Socket.IO 推送新回复事件（广播到对应博客房间）
         const io = (req.app as any).get("io");
-        const blogId = mainComment.blogId.toString();
-        if (io) {
+        const blogId = mainComment.blogId?.toString();
+        if (io && blogId) {
             io.to(`blog:${blogId}`).emit("comment:new", { type: "reply", data: replyComment });
         }
 

@@ -432,7 +432,7 @@ export default function Home() {
                         <motion.div variants={scaleIn} className="relative flex justify-center overflow-visible">
                             {/* Glow effect */}
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-96 h-96 bg-warm-orange/20 rounded-full blur-3xl"></div>
+                                <div className="w-120 h-120 bg-warm-orange/30 rounded-full blur-3xl"></div>
                             </div>
 
                             {/* Coding Symbols Animation - Behind card */}

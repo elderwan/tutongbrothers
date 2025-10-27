@@ -68,6 +68,8 @@ playwright/.auth/
 trace.zip
 test-results.json
 playwright-state.json
+.playwright-mcp
+
 
 # ============================================
 # Temporary & Cache
