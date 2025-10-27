@@ -100,23 +100,37 @@ export function CommentListCompact({ blogId, onCommentUpdate, className }: Comme
     <div className={cn("space-y-3 w-full", className)}>
       {/* 紧凑模式的添加评论行 */}
       {user && (
-        <form onSubmit={handleAddComment} className="flex w-full items-center space-x-2">
-          <Avatar className="h-6 w-6 flex-shrink-0">
-            <AvatarImage src={user.userImg} alt={user.userName} />
-            <AvatarFallback>{user?.userName ? user?.userName.charAt(0) : "T"}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1 flex items-center space-x-2">
-            <input
-              type="text"
-              placeholder="write a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="w-full border rounded-full px-3 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isSubmitting}
-            />
-            <Button type="submit" disabled={isSubmitting || !newComment.trim()} size="sm" className="h-6 px-3 text-xs">
-              {isSubmitting ? "posting..." : "post"}
-            </Button>
+        <form onSubmit={handleAddComment} className="mb-3 pb-3 border-b">
+          <div className="flex items-start gap-2">
+            <Avatar className="h-6 w-6 flex-shrink-0">
+              <AvatarImage src={user.userImg} alt={user.userName} sizes="24px" quality={85} />
+              <AvatarFallback>{user?.userName ? user?.userName.charAt(0) : "T"}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <input
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="say something..."
+                className="w-full px-3 py-1 bg-muted/50 rounded-full text-xs focus:outline-none focus:ring-1 focus:ring-accent"
+                disabled={isSubmitting}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey && newComment.trim()) {
+                    e.preventDefault();
+                    handleAddComment(e);
+                  }
+                }}
+              />
+            </div>
+            {newComment.trim() && (
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                size="sm"
+                className="h-6 px-3 text-xs rounded-full"
+              >
+                Send
+              </Button>
+            )}
           </div>
         </form>
       )}

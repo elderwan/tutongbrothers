@@ -201,6 +201,7 @@ export default function PhotoCarousel() {
             </div>
 
             {/* Fullscreen Modal */}
+            {/* Fullscreen Modal */}
             {showFullScreen && (
                 <div
                     className="fixed inset-0 bg-black/20 backdrop-blur-xl z-50 flex items-center justify-center"
@@ -214,10 +215,7 @@ export default function PhotoCarousel() {
                         <X className="w-6 h-6 text-white" />
                     </button>
 
-                    <div
-                        className="relative w-[90vw] h-[90vh]"
-                        onClick={(e) => e.stopPropagation()}
-                    >
+                    <div className="relative w-[90vw] h-[90vh] pointer-events-none">
                         <Image
                             src={currentPhoto.url}
                             alt="Fullscreen view"

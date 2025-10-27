@@ -176,7 +176,7 @@ export default function PostCard({ post, onDeleted, onClick }: PostCardProps) {
 
 
       {/* Images Below - Max 9 with overlay on last */}
-      {post.images && post.images.length > 0 && (
+      {/* {post.images && post.images.length > 0 && (
         <div className="aspect-video overflow-hidden">
           <img
             src={post.images[0]}
@@ -184,7 +184,7 @@ export default function PostCard({ post, onDeleted, onClick }: PostCardProps) {
             className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
           />
         </div>
-      )}
+      )} */}
 
       {/* Post Content */}
       <div className="p-4">
@@ -196,14 +196,14 @@ export default function PostCard({ post, onDeleted, onClick }: PostCardProps) {
         {post.images && post.images.length > 1 && (
           <div className={`grid gap-2 mb-3 ${post.images.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
             }`}>
-            {post.images.slice(1, 9).map((image, index) => (
+            {post.images.slice(0, 9).map((image, index) => (
               <div key={index} className="relative aspect-square overflow-hidden rounded-beagle-sm shadow-beagle-sm">
                 <img
                   src={image}
                   alt={`Post image ${index + 2}`}
                   className="w-full h-full object-cover"
                 />
-                {index === 7 && post.images.length > 9 && (
+                {index === 8 && post.images.length > 9 && (
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                     <span className="text-white text-lg font-bold">+{post.images.length - 9}</span>
                   </div>

@@ -226,29 +226,37 @@ export function CommentList({ blogId, onCommentUpdate, className }: CommentListP
         <div className={cn("space-y-4 max-w-4xl  w-full mx-auto", className)}>
             {/* 添加评论表单 */}
             {user && (
-                <form onSubmit={handleAddComment} className="flex w-full items-center space-x-3">
-                    <Avatar className="h-8 w-8 flex-shrink-0">
-                        <AvatarImage src={user.userImg} alt={user.userName} />
-                        <AvatarFallback>{user?.userName ? user?.userName.charAt(0) : "T"}</AvatarFallback>
-                    </Avatar>
-
-                    <div className="flex-1 flex items-center space-x-2">
-                        <input
-                            type="text"
-                            placeholder="write a comment..."
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            className="w-full bg-[#F9F5F0] border rounded-full px-4 py-2 text-sm 
-                              focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            disabled={isSubmitting}
-                        />
-                        <Button
-                            type="submit"
-                            disabled={isSubmitting || !newComment.trim()}
-                            className="shrink-0"
-                        >
-                            {isSubmitting ? "posting..." : "post"}
-                        </Button>
+                <form onSubmit={handleAddComment} className="mb-4 pb-4 border-b">
+                    <div className="flex items-start gap-3">
+                        <Avatar className="h-8 w-8 flex-shrink-0">
+                            <AvatarImage src={user.userImg} alt={user.userName} sizes="32px" quality={85} />
+                            <AvatarFallback>{user?.userName ? user?.userName.charAt(0) : "T"}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                            <input
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                placeholder="say something..."
+                                className="w-full px-3 py-2 bg-muted/50 rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                                disabled={isSubmitting}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey && newComment.trim()) {
+                                        e.preventDefault();
+                                        handleAddComment(e);
+                                    }
+                                }}
+                            />
+                        </div>
+                        {newComment.trim() && (
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting}
+                                size="sm"
+                                className="rounded-full"
+                            >
+                                Send
+                            </Button>
+                        )}
                     </div>
                 </form>
 

@@ -1,15 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Heart, MessageCircle, Eye, ChevronLeft, ChevronRight } from "lucide-react"
+import { Heart, MessageCircle, Eye, ChevronLeft, ChevronRight, X } from "lucide-react"
 import { useErrorDialog } from '@/components/dialogs/error-dialog'
+import { useSuccessDialog } from '@/components/dialogs/success-dialog'
 import { likePostApi, getPostByIdApi, getPostCommentsCount } from "@/api/post"
 import { dateFormat } from "@/lib/date"
 import { useAuth } from '@/contexts/AuthContext'
 import { PostCommentList } from "./post-comment-list"
+import { getFollowStatus, followUser as followUserApi, unfollowUser as unfollowUserApi } from "@/api/follow"
 
 interface PostDetailDialogProps {
   open: boolean
@@ -24,7 +26,10 @@ export default function PostDetailDialog({ open, onOpenChange, postId }: PostDet
   const [likesCount, setLikesCount] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
   const [commentsCount, setCommentsCount] = useState(0)
+  const [isFollowing, setIsFollowing] = useState(false)
+  const [followLoading, setFollowLoading] = useState(false)
   const { showError } = useErrorDialog()
+  const { showSuccess } = useSuccessDialog()
   const { user } = useAuth()
 
   useEffect(() => {
@@ -66,6 +71,22 @@ export default function PostDetailDialog({ open, onOpenChange, postId }: PostDet
     }
   }
 
+  // Load follow status
+  useEffect(() => {
+    if (post && user) {
+      const authorId = typeof post.userId === 'string' ? post.userId : post.userId._id
+      if (authorId && user.id !== authorId) {
+        getFollowStatus(authorId)
+          .then(res => {
+            if (res.code === 200) {
+              setIsFollowing(!!res.data?.isFollowing)
+            }
+          })
+          .catch(err => console.error("Failed to get follow status", err))
+      }
+    }
+  }, [post, user])
+
   const handleLike = async () => {
     try {
       const response = await likePostApi(postId)
@@ -79,6 +100,51 @@ export default function PostDetailDialog({ open, onOpenChange, postId }: PostDet
         title: "Error",
         msg: "Failed to like post"
       })
+    }
+  }
+
+  const handleFollowToggle = async () => {
+    if (!user) {
+      showError({
+        code: 401,
+        title: "Authentication Required",
+        msg: "Please login to follow users"
+      })
+      return
+    }
+
+    if (!post?.userId) {
+      return
+    }
+
+    const authorId = typeof post.userId === 'string' ? post.userId : post.userId._id
+
+    // Don't allow following yourself
+    if (user.id === authorId) {
+      return
+    }
+
+    try {
+      setFollowLoading(true)
+      if (isFollowing) {
+        const res = await unfollowUserApi(authorId)
+        if (res.code === 200) {
+          setIsFollowing(false)
+          showSuccess({ title: "Unfollowed", msg: "You have unfollowed the author" })
+        }
+      } else {
+        const res = await followUserApi(authorId)
+        if (res.code === 200) {
+          setIsFollowing(true)
+          showSuccess({ title: "Followed", msg: "You are now following the author" })
+        } else {
+          showError({ code: res.code, title: "Operation failed", msg: res.msg })
+        }
+      }
+    } catch (error) {
+      showError({ code: 500, title: "Operation failed", msg: "Please try again later" })
+    } finally {
+      setFollowLoading(false)
     }
   }
 
@@ -115,6 +181,12 @@ export default function PostDetailDialog({ open, onOpenChange, postId }: PostDet
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[95vw] lg:max-w-[1000px] max-h-[90vh] p-0 overflow-hidden flex flex-col">
+        {/* Close button */}
+        <DialogClose className="absolute right-4 top-4 z-50 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+          {/* <X className="h-4 w-4" /> */}
+          <span className="sr-only">Close</span>
+        </DialogClose>
+
         {loading ? (
           <div className="flex justify-center items-center h-full min-h-[400px]">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -125,7 +197,7 @@ export default function PostDetailDialog({ open, onOpenChange, postId }: PostDet
             <div className="flex-1 flex flex-col bg-white lg:max-w-[55%] overflow-hidden">
               {/* Image Carousel */}
               {post.images && post.images.length > 0 ? (
-                <div className="flex-1 relative flex items-center justify-center bg-white overflow-hidden">
+                <div className="relative flex items-center justify-center bg-white h-[400px] lg:h-[600px]">
                   <img
                     src={post.images[currentImageIndex]}
                     alt={`Image ${currentImageIndex + 1}`}
@@ -203,8 +275,14 @@ export default function PostDetailDialog({ open, onOpenChange, postId }: PostDet
                       <p className="text-xs text-gray-500">{dateFormat(post.createdAt)}</p>
                     </div>
                     {!isAuthor && (
-                      <Button size="sm" className="ml-2">
-                        Follow
+                      <Button
+                        size="sm"
+                        className="ml-2"
+                        variant={isFollowing ? "secondary" : "default"}
+                        onClick={handleFollowToggle}
+                        disabled={followLoading}
+                      >
+                        {followLoading ? "Loading..." : isFollowing ? "Following" : "Follow"}
                       </Button>
                     )}
                   </div>
