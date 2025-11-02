@@ -8,8 +8,7 @@ import { useEffect, useState, useRef } from "react"
 
 // 🔤 符号库 - 添加或删除编程符号
 const SYMBOLS = [
-    "@", "#", "$", "%", "&", "*", "{", "}", "[", "]", "<", ">", "/", "\\",
-    "string", "number", "boolean", "const", "let", "var", "function", "=>"
+    "Java", "springboot", "MySQL", "HTML", "CSS", "JS", "TS", "React", "Node", "API", "JSON", "Python"
 ]
 
 // 🎨 颜色方案 - 像素风格配色（修改符号颜色）
@@ -22,14 +21,14 @@ const COLORS = [
 ]
 
 // ⏱️ 动画时长 - 符号从出现到消失的时间（秒）
-const ANIMATION_DURATION_MIN = 1.5  // 最短时长
+const ANIMATION_DURATION_MIN = 2.0  // 最短时长
 const ANIMATION_DURATION_MAX = 2.5  // 最长时长
 
 // 🔢 符号数量 - 同时显示的最大符号数
 const MAX_SYMBOLS = 12
 
 // ⚡ 生成频率 - 多久产生一个新符号（毫秒）
-const SPAWN_INTERVAL_MIN = 50  // 最短间隔（更快）
+const SPAWN_INTERVAL_MIN = 100  // 最短间隔（更快）
 const SPAWN_INTERVAL_MAX = 200  // 最长间隔
 
 // 📏 符号大小 - 字体尺寸（像素）- 像素字体适合较小尺寸
@@ -37,7 +36,7 @@ const SYMBOL_SIZE_MOBILE = 24   // 移动端：24px（像素字体最佳尺寸�
 const SYMBOL_SIZE_DESKTOP = 32  // 桌面端：32px（像素字体最佳尺寸）
 
 // 📍 移动距离 - 符号扩散的距离（像素）
-const SPREAD_DISTANCE_MIN = 320  // 最短扩散距离
+const SPREAD_DISTANCE_MIN = 480  // 最短扩散距离
 const SPREAD_DISTANCE_MAX = 480  // 最长扩散距离
 
 // ============================================
@@ -107,7 +106,7 @@ export default function SimpleCodingAnimation() {
 
     return (
         <>
-            {/* 🎬 一段式流畅动画 - 从中心淡入扩散，最后淡出 */}
+            {/* 🎬 流畅连续动画 - 快速淡入后持续移动并渐隐，无停顿 */}
             <style>{`
                 ${symbols.map(symbol => `
                     @keyframes symbolFloat-${symbol.id} {
@@ -115,13 +114,8 @@ export default function SimpleCodingAnimation() {
                             transform: translate(-50%, -50%) translate(0%, 0%) rotate(0deg) scale(0.5);
                             opacity: 0;
                         }
-                        20% {
+                        60% {
                             opacity: 1;
-                            transform: translate(-50%, -50%) translate(${symbol.endX * 0.2}px, ${symbol.endY * 0.2}px) rotate(${symbol.rotation * 0.4}deg) scale(1);
-                        }
-                        80% {
-                            opacity: 0.9;
-                            transform: translate(-50%, -50%) translate(${symbol.endX * 0.85}px, ${symbol.endY * 0.85}px) rotate(${symbol.rotation * 0.9}deg) scale(1);
                         }
                         100% {
                             transform: translate(-50%, -50%) translate(${symbol.endX}px, ${symbol.endY}px) rotate(${symbol.rotation}deg) scale(0.8);
