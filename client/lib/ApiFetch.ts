@@ -60,6 +60,7 @@ export function createApiFetch(isAuthEndpoint: boolean = false) {
         const response = await fetch(url, {
             ...options,
             headers,
+            credentials: 'include', // 重要：允许跨域请求携带 cookies 和处理 CORS
         });
 
         // Check for token expiration (401 Unauthorized)

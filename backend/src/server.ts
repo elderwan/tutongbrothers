@@ -44,11 +44,22 @@ connectDB();
 
 const app: Application = express();
 
-// 中间件
-app.use(cors({
+// 优化的 CORS 配置
+const corsOptions = {
     origin: config.clientUrl,
     credentials: true,
-}));
+    maxAge: 86400, // 24小时缓存 preflight 响应
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'userId'],
+    exposedHeaders: ['Content-Length', 'X-Request-Id'],
+    optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+
+// 快速处理 OPTIONS 请求（preflight）- 必须在 cors 之后
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
 
 // 路由

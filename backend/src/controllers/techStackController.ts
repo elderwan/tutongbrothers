@@ -5,7 +5,10 @@ import ApiResponse from "../utils/Response";
 // 获取所有技术栈数据
 export const getTechStack = async (req: Request, res: Response): Promise<void> => {
     try {
-        const techStack = await TechCategory.find({});
+        // 添加缓存头，减少重复请求
+        res.setHeader('Cache-Control', 'public, max-age=600'); // 10分钟缓存
+
+        const techStack = await TechCategory.find({}).lean(); // 使用 lean() 提高性能
         res.status(200).json(ApiResponse.success("Tech stack retrieved successfully", 200, techStack));
     } catch (error) {
         console.error(error);

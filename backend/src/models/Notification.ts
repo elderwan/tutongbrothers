@@ -29,4 +29,8 @@ const notificationSchema: Schema = new Schema(
   { timestamps: true }
 );
 
+// 添加索引优化查询性能
+notificationSchema.index({ receiverId: 1, createdAt: -1 }); // 按接收者和时间查询
+notificationSchema.index({ receiverId: 1, isRead: 1 }); // 按接收者和已读状态查询
+
 export default mongoose.model<INotification>("notifications", notificationSchema);

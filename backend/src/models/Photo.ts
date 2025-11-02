@@ -25,4 +25,7 @@ const PhotoSchema: Schema = new Schema({
     timestamps: true
 });
 
+// 添加索引优化查询性能
+PhotoSchema.index({ order: 1, createdAt: -1 }); // 按顺序和创建时间排序
+
 export default mongoose.model<IPhoto>('Photo', PhotoSchema);

@@ -10,6 +10,9 @@ export const getNotifications = async (req: Request, res: Response): Promise<voi
     const { page = 1, limit = 20 } = req.query as any
     const skip = (Number(page) - 1) * Number(limit)
 
+    // 添加缓存头（较短缓存，因为通知需要实时性）
+    res.setHeader('Cache-Control', 'private, max-age=10'); // 10秒缓存
+
     // 关联主评论/回复评论的内容，用于前端展示被回复的评论文本
     const notifications = await Notification.find({ receiverId: userId })
       .sort({ createdAt: -1 })
@@ -17,11 +20,12 @@ export const getNotifications = async (req: Request, res: Response): Promise<voi
       .limit(Number(limit))
       .populate({ path: "mainCommentId", select: "content" })
       .populate({ path: "replyCommentId", select: "content" })
+      .lean() // 使用 lean() 提高性能
 
     const total = await Notification.countDocuments({ receiverId: userId })
 
     const items = notifications.map((n: any) => {
-      const doc = n.toObject()
+      const doc = n
       let commentContent: string | undefined
       let commentDeleted = false
       // 回复通知：优先返回子评论内容，若不存在则认为已删除

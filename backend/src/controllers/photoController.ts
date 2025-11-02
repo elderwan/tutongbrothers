@@ -4,7 +4,13 @@ import Photo from '../models/Photo';
 // 获取所有照片（按顺序）
 export const getPhotos = async (req: Request, res: Response) => {
     try {
-        const photos = await Photo.find().sort({ order: 1, createdAt: -1 });
+        // 添加缓存头，减少重复请求
+        res.setHeader('Cache-Control', 'public, max-age=300'); // 5分钟缓存
+
+        const photos = await Photo.find()
+            .sort({ order: 1, createdAt: -1 })
+            .lean(); // 使用 lean() 提高查询性能
+
         res.status(200).json({
             code: 200,
             msg: 'success',

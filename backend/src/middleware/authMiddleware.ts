@@ -12,6 +12,11 @@ declare global {
 }
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+  // 跳过 OPTIONS 请求（preflight），不需要验证 token
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
+
   try {
     // 从请求头获取token
     const authHeader = req.headers.authorization;
